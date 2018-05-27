@@ -17,8 +17,8 @@
     <string name="nav_fourth_item">Useful Links</string>
     <string name="nav_fourth_item_body">You can learn from here</string>
 
-    <string name="nav_fifth_item">Useful Links</string>
-    <string name="nav_fifth_item_body">Press here to capture the mole</string>
+    <string name="nav_fifth_item">Tell a friend about us!</string>
+    <string name="nav_fifth_item_body">You can share our Application with your friend</string>
 
     <string name="nav_sixth_item">Report a bug</string>
     <string name="nav_sixth_item_body">Press here to capture the mole</string>
