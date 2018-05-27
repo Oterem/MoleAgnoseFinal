@@ -5,7 +5,7 @@
     <color name="backgroundcolor">#fcfcfc</color>
     <color name="lightgray">#ededed</color>
     <color name="deeppurple">#7c4dff</color>
-    <color name="yello">#ffb300</color>
+    <color name="yellow">#ffb300</color>
     <color name="green">#00bfa5</color>
     <color name="colorAccent">#FF4081</color>
     <color name="light_blue">#ADD8E6</color>
@@ -15,7 +15,7 @@
     <color name="grey">#444444</color>
     <color name="nav_background_color">#fcfcfc</color>
     <color name="nav_content_text_color">#23283a</color>
-
+    <color name="header_color">#3333ff</color>
 
     <color name="black_overlay">#66000000</color>
 </resources>
