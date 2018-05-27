@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Demo</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="nav_first_item">Camera</string>
+    <string name="nav_first_item_body">Press here to capture the mole</string>
+
+    <string name="nav_second_item">Gallery</string>
+    <string name="nav_second_item_body">Browse images</string>
+
+    <string name="nav_third_item">History</string>
+    <string name="nav_third_item_body">View diagnosed images</string>
+
+    <string name="nav_fourth_item">Useful Links</string>
+    <string name="nav_fourth_item_body">You can learn from here</string>
+
+    <string name="nav_fifth_item">Useful Links</string>
+    <string name="nav_fifth_item_body">Press here to capture the mole</string>
+
+    <string name="nav_sixth_item">Report a bug</string>
+    <string name="nav_sixth_item_body">Press here to capture the mole</string>
+
+    <string name="hamburger">hamburger</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+    <string name="help">Help</string>
+    <string name="about">About</string>
+    <string name="appName">MoleAgnose</string>
+</resources>
