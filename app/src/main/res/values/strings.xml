@@ -24,6 +24,13 @@
     <string name="nav_sixth_item_body">Press here to capture the mole</string>
 
     <string name="hamburger">hamburger</string>
+    <string name="about_contact">Connect with us</string>
+    <string name="about_email">"shai.work1@gmail.com</string>
+    <string name="about_github">Oterem/moleAgnose</string>
+    <string name="about_facebook">Moleagnose</string>
+    <string name="about_playStore"></string>
+    <string name="about_description">Moleagnose - application for diagnosing suspicious moles</string>
+    <string name="about_website">https://github.com/Oterem/moleAgnose</string>
     <string name="open">open</string>
     <string name="close">close</string>
     <string name="help">Help</string>
