@@ -80,6 +80,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/nav_background_color"
                 android:gravity="center"
+                android:onClick="galleryBrowse"
                 android:orientation="vertical">
 
                 <ImageView
@@ -109,8 +110,8 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="@string/nav_second_item_body"
-                    android:textStyle="bold"
-                    android:textColor="@color/nav_content_text_color" />
+                    android:textColor="@color/nav_content_text_color"
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
