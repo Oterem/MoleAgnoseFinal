@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity
     //------------------------End static Vars -------------------------------------
     //---------------------------- Global var --------------------------------------
     private Uri photoURI;
-    private int i =0;
     //----------------------------END Global var --------------------------------------
 
 
