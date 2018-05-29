@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,10 @@ public abstract class Utils {
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, str);
         sharingIntent.setType("text/plain");
         context.startActivity(sharingIntent);
+    }
+
+    public static void makeToast(Context context, String msg){
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
 
 }

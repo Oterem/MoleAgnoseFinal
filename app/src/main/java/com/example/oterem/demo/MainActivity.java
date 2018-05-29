@@ -40,8 +40,6 @@ public class MainActivity extends AppCompatActivity
     private Uri photoURI;
     //--------------------------END Global var --------------------------------------
 
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +133,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 photoFile = Utils.createImageFile(this);
             } catch (IOException ex) {
-                Toast.makeText(getApplicationContext(), R.string.create_file_error, Toast.LENGTH_LONG).show();
+               Utils.makeToast(this,getString(R.string.create_file_error));
             }
 
             // Continue only if the File was successfully created
@@ -179,7 +177,7 @@ public class MainActivity extends AppCompatActivity
                         CropImage.activity(photoURI)
                                 .start(this);
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), R.string.create_file_error, Toast.LENGTH_LONG).show();
+                        Utils.makeToast(this,getString(R.string.create_file_error));
                     }
                     break;
 //
@@ -188,7 +186,7 @@ public class MainActivity extends AppCompatActivity
                         photoURI = data.getData();
                         CropImage.activity(photoURI).start(this);
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), R.string.create_file_error, Toast.LENGTH_LONG).show();
+                        Utils.makeToast(this,getString(R.string.create_file_error));
                     }
                     break;
 
