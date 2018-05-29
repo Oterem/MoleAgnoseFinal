@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity
     //---------------------------- static Vars --------------------------------------
     private static final int ACTION_IMAGE_CAPTURE = 1;
     //------------------------End static Vars -------------------------------------
-    //---------------------------- Global var --------------------------------------
     private Uri photoURI;
     //----------------------------END Global var --------------------------------------
 
