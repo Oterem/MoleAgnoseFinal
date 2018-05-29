@@ -36,4 +36,7 @@
     <string name="help">Help</string>
     <string name="about">About</string>
     <string name="appName">MoleAgnose</string>
+    <string name="create_file_error">Error occurred while creating the File</string>
+
+
 </resources>
