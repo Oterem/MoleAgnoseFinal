@@ -37,6 +37,8 @@
     <string name="about">About</string>
     <string name="appName">MoleAgnose</string>
     <string name="create_file_error">Error occurred while creating the File</string>
-
+    <string name="tellAboutUs_message">I\'m really want to recommend to you to use MoleAgnose\n\n
+            https://github.com/Oterem/MoleAgnoseFinal\n\n
+            Downlode it Fast and Help to save lives :)</string>
 
 </resources>

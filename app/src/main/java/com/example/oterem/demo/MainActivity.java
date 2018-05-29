@@ -1,11 +1,14 @@
 package com.example.oterem.demo;
 
+import android.content.ClipData;
 import android.content.Intent;
 
 import android.net.Uri;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
@@ -19,7 +22,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,10 +34,11 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     //---------------------------- static Vars --------------------------------------
     private static final int ACTION_IMAGE_CAPTURE = 1;
-    //------------------------End static Vars -------------------------------------
+    private static final int ACTION_GET_CONTENT = 2;
+    //--------------------------End static Vars -------------------------------------
+    //----------------------------- Global Vars --------------------------------------
     private Uri photoURI;
-    //----------------------------END Global var --------------------------------------
-
+    //--------------------------END Global var --------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,14 +99,15 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
+            launchCamera(item.getActionView());
         } else if (id == R.id.nav_gallery) {
-
+            galleryBrowse(item.getActionView());
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
-
+            Utils.tellAboutUs(this,item.getActionView());
         } else if (id == R.id.nav_send) {
 
         }
@@ -125,7 +133,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 photoFile = Utils.createImageFile(this);
             } catch (IOException ex) {
-                Toast.makeText(getApplicationContext(), R.string.create_file_error, Toast.LENGTH_LONG).show();
+               Utils.makeToast(this,getString(R.string.create_file_error));
             }
 
             // Continue only if the File was successfully created
@@ -139,13 +147,66 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void galleryBrowse(View v) {
+
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        TextView t = (TextView) findViewById(R.id.textView);
+//        t.setText("");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), ACTION_GET_CONTENT);
+    }
+    /*-------------------------------------------------------------------*/
+
+    /**
+     * For handling different intents
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-            if(requestCode==ACTION_IMAGE_CAPTURE && resultCode==RESULT_OK){
-                Log.i("TAG","pic has taken");
-            }
 
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+
+            //histogram_btn.setEnabled(true);
+
+
+            switch (requestCode) {
+                case ACTION_IMAGE_CAPTURE: //in case user is taking a picture
+                    try {
+                        CropImage.activity(photoURI)
+                                .start(this);
+                    } catch (Exception e) {
+                        Utils.makeToast(this,getString(R.string.create_file_error));
+                    }
+                    break;
+//
+                case ACTION_GET_CONTENT: //in case user is loading picture from gallery
+                    try {
+                        photoURI = data.getData();
+                        CropImage.activity(photoURI).start(this);
+                    } catch (Exception e) {
+                        Utils.makeToast(this,getString(R.string.create_file_error));
+                    }
+                    break;
+
+                case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                    if (resultCode == RESULT_OK) {//Delete the full size image after the crop
+                        File fdelete = new File(photoURI.getPath());
+                        if (fdelete.exists()) {
+                            if (fdelete.delete()) {
+                                System.out.println("file Deleted :" + photoURI.getPath());
+                            } else {
+                                System.out.println("file not Deleted :" + photoURI.getPath());
+                            }
+                        }
+                        photoURI = result.getUri();
+                    }
+                    break;
+
+            }
+        }
     }
 }
 
