@@ -16,6 +16,9 @@
     <color name="nav_background_color">#fcfcfc</color>
     <color name="nav_content_text_color">#23283a</color>
     <color name="header_color">#3333ff</color>
+    <color name="diagnose_ok">#18B14D</color>
+    <color name="diagnose_bad">#000000</color>
+    <color name="diagnose_meduim">#FFA000</color>
 
     <color name="black_overlay">#66000000</color>
 </resources>

@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Demo</string>
     <string name="title_activity_navigation">NavigationActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -35,10 +34,17 @@
     <string name="close">close</string>
     <string name="help">Help</string>
     <string name="about">About</string>
-    <string name="appName">MoleAgnose</string>
+    <string name="app_name">MoleAgnose</string>
     <string name="create_file_error">Error occurred while creating the File</string>
     <string name="tellAboutUs_message">I\'m really want to recommend to you to use MoleAgnose\n\n
             https://github.com/Oterem/MoleAgnoseFinal\n\n
             Downlode it Fast and Help to save lives :)</string>
+    <string name="pop_up_close_window">Got it!</string>
+    <string name="show_case_close_window">Got it!</string>
+    <string name="show_case_camera_text">Take a picture of your mole. Then you can crop your picture. Try to focus on the mole</string>
+    <string name="show_case_gallery_text">You can browse images from your gallery and analyze them</string>
+    <string name="show_case_history_text">Browse images that has been analyzed</string>
+    <string name="show_case_links_text">Stay updated</string>
+
 
 </resources>

@@ -28,17 +28,19 @@
             android:foreground="?android:attr/selectableItemBackground">
 
             <LinearLayout
+
+                android:id="@+id/content_camera"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/nav_background_color"
                 android:gravity="center"
-                android:onClick="launchCamera"
                 android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:background="@drawable/cercleshape_pink"
+                    android:onClick="launchCamera"
                     android:padding="10dp"
                     android:src="@android:drawable/ic_menu_camera" />
 
@@ -76,6 +78,7 @@
             android:foreground="?android:attr/selectableItemBackground">
 
             <LinearLayout
+                android:id="@+id/content_gallery"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/nav_background_color"
@@ -133,6 +136,7 @@
             android:foreground="?android:attr/selectableItemBackground">
 
             <LinearLayout
+                android:id="@+id/content_history"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/nav_background_color"
@@ -167,7 +171,7 @@
                     android:padding="5dp"
                     android:text="@string/nav_third_item_body"
                     android:textColor="@color/nav_content_text_color"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -180,6 +184,7 @@
             android:foreground="?android:attr/selectableItemBackground">
 
             <LinearLayout
+                android:id="@+id/content_link"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/nav_background_color"
@@ -213,8 +218,8 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="@string/nav_fourth_item_body"
-                    android:textStyle="bold"
-                    android:textColor="@color/nav_content_text_color" />
+                    android:textColor="@color/nav_content_text_color"
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
