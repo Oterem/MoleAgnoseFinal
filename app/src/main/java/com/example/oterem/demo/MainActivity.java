@@ -26,9 +26,14 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private Uri photoURI;
+    //---------------------------- static Vars --------------------------------------
     private static final int ACTION_IMAGE_CAPTURE = 1;
+    //------------------------End static Vars -------------------------------------
+    //---------------------------- Global var --------------------------------------
+    private Uri photoURI;
+    private int i =0;
+    //----------------------------END Global var --------------------------------------
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
