@@ -3,7 +3,9 @@ package com.example.oterem.demo;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
+import android.view.View;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,4 +30,13 @@ public abstract class Utils {
 //        currentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
+    public static void tellAboutUs(Context context, View v){
+        String str = context.getString(R.string.tellAboutUs_message);
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, str);
+        sharingIntent.setType("text/plain");
+        context.startActivity(sharingIntent);
+    }
+
 }
