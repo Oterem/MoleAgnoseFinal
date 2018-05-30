@@ -182,6 +182,7 @@
             android:layout_height="190dp"
             android:layout_margin="10dp"
             android:clickable="true"
+            android:onClick="startLinksActivity"
             android:foreground="?android:attr/selectableItemBackground">
 
             <LinearLayout
@@ -189,6 +190,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/nav_background_color"
+
                 android:gravity="center"
                 android:orientation="vertical">
 

@@ -19,6 +19,16 @@
     <color name="diagnose_ok">#18B14D</color>
     <color name="diagnose_bad">#000000</color>
     <color name="diagnose_meduim">#FFA000</color>
-
     <color name="black_overlay">#66000000</color>
+    <color name="colorPrimaryFragment">#3BB894</color>
+    <color name="colorPrimaryDarkFragment">#2e7d32</color>
+    <color name="colorAccentFragment">#8BC34A</color>
+    <color name="spruceViewColor">#4bc495</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="lighter_gray">#DDDDDD</color>
+    <color name="darker_gray">#939393</color>
+    <color name="recycler_background">#F8F8F9</color>
+    <color name="fake_paragraphs">#D9E1E2</color>
+    <color name="square_background">#DBE9F9</color>
 </resources>

@@ -49,6 +49,8 @@
     <string name="progressDialog_uploading_image">Uploading image...</string>
     <string name="progressDialog_downloading_image">Download diagnose...</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

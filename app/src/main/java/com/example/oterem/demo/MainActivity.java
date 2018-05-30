@@ -156,13 +156,15 @@ public class MainActivity extends LoadingDialog
             launchCamera(null);
         } else if (id == R.id.nav_gallery) {
             galleryBrowse(null);
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_history) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_links) {
+            startLinksActivity(null);
 
         } else if (id == R.id.nav_share) {
             Utils.tellAboutUs(this, null);
         } else if (id == R.id.nav_send) {
+
 
         }
 
@@ -174,6 +176,10 @@ public class MainActivity extends LoadingDialog
 
     private void startAboutActivity() {
         Intent i = new Intent(this, About.class);
+        startActivity(i);
+    }
+    public void startLinksActivity(View v){
+        Intent i = new Intent(this, ListViewActivity.class);
         startActivity(i);
     }
 
