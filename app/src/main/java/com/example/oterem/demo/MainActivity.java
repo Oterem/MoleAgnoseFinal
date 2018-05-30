@@ -7,16 +7,19 @@ import android.content.ClipData;
 import android.app.Dialog;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
@@ -50,13 +53,18 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.droidbyme.dialoglib.AnimUtils;
 import com.droidbyme.dialoglib.DroidDialog;
 
+import com.mzelzoghbi.zgallery.ZGallery;
+import com.mzelzoghbi.zgallery.entities.ZColor;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
@@ -157,6 +165,7 @@ public class MainActivity extends LoadingDialog
         } else if (id == R.id.nav_gallery) {
             galleryBrowse(null);
         } else if (id == R.id.nav_history) {
+            galleryActivity();
 
         } else if (id == R.id.nav_links) {
             startLinksActivity(null);
@@ -356,12 +365,16 @@ public class MainActivity extends LoadingDialog
                             @Override
                             public void onPositive(Dialog dialog) {
                                 dialog.dismiss();
+
+
+
                                 //TODO: this point is after getting diagnose. we save here the result (save date+ diagnose and "write" on image). and prepare the app for new cycle
 
                             }
                         })
                         .animation(AnimUtils.AnimFadeInOut)
                         .show();
+
                 break;
             case 0:
                 new DroidDialog.Builder(this)
@@ -533,7 +546,9 @@ public class MainActivity extends LoadingDialog
             showProgressDialog(getString(R.string.progressDialog_downloading_image));}
 
         @Override
-        protected void onPostExecute(Void aVoid) {}
+        protected void onPostExecute(Void aVoid) {
+
+        }
     }
 
     public void downloadFromS3(){
@@ -567,8 +582,7 @@ public class MainActivity extends LoadingDialog
                     FileInputStream fis = null;
                     JSONObject json = null;
                     try {
-                        //f = new BufferedInputStream(new FileInputStream(filePath));
-                        //f.read(buffer);
+
 
                         fis = new FileInputStream(json_string);
                         char current;
@@ -601,6 +615,10 @@ public class MainActivity extends LoadingDialog
                         Toast.makeText(getApplicationContext(),name+": "+val+"%",Toast.LENGTH_LONG);
                         Log.i(TAG, "========End of Final Score===========");
 
+                        //saveImage(getApplicationContext(),,"omri","jpg");
+
+
+
                     }catch (Exception e){
                         Toast.makeText(getApplicationContext(),"Error parsing json1", Toast.LENGTH_LONG);
 
@@ -625,7 +643,72 @@ public class MainActivity extends LoadingDialog
 
 
 
+    public void Savefile(String name, String path) {
+        File direct = new File(Environment.getExternalStorageDirectory() + "/MyAppFolder/MyApp/");
+        File file = new File(Environment.getExternalStorageDirectory() + "/MyAppFolder/MyApp/"+name+".jpg");
 
+        if(!direct.exists()) {
+            direct.mkdir();
+        }
+
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                FileChannel src = new FileInputStream(path).getChannel();
+                FileChannel dst = new FileOutputStream(file).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                src.close();
+                dst.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+    public void galleryActivity() {
+        ZGallery.with(this, getDummyImageList())
+                .setToolbarTitleColor(ZColor.WHITE)
+                .setGalleryBackgroundColor(ZColor.WHITE)
+                .setToolbarColorResId(R.color.colorPrimary)
+                .setTitle("Moles you have captured")
+                .show();
+    }
+
+    private ArrayList<String> getDummyImageList() {
+        ArrayList<String> imagesList = new ArrayList<>();
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05110349/20160731-igor-trepeshchenok-barnimages-08-768x509.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05095154/tumblr_oawfisUmZo1u7ns0go1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05095153/tumblr_obbkeo3lZW1ted1sho1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05095153/tumblr_obaxpnJbKg1sfie3io1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05095153/tumblr_obdehwWneK1slhhf0o1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05095152/2016-08-01-roman-drits-barnimages-005-768x512.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05095151/2016-08-01-roman-drits-barnimages-003-768x512.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05095149/tumblr_obbjwp1bDz1ted1sho1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05095151/tumblr_oawfhnxNjL1u7ns0go1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05095150/tumblr_ob6xvqXLoB1tlwzgvo1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/05095148/20160731-igor-trepeshchenok-barnimages-10-768x512.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/03092421/tumblr_oawfgd2G941u7ns0go1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/03092423/tumblr_ob6xutS8N21tlwzgvo1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/03092421/tumblr_o86sgm6F7a1ted1sho1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/03092420/tumblr_ob6xudqW4U1tlwzgvo1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/03092420/2016-08-01-roman-drits-barnimages-002-768x512.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/03092418/tumblr_o97fatuGnd1ted1sho1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/03092420/tumblr_oawff12j9L1u7ns0go1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/03092420/2016-08-01-roman-drits-barnimages-001-768x512.jpg");
+        imagesList.add("http://1x402i15i5vh15yage3fafmg.wpengine.netdna-cdn.com/wp-content/uploads/2016/08/tumblr_oawfdsEx2w1u7ns0go1_500-1.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/08/03092417/tumblr_o97gyqSK3k1ted1sho1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/07/03092417/20160731-igor-trepeshchenok-barnimages-07-768x512.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/07/03092605/tumblr_ob6wjiCBUh1tlwzgvo1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/07/03092604/tumblr_ob6wkn58cJ1tlwzgvo1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/07/03092416/tumblr_ob6wk7mns81tlwzgvo1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/07/03092413/tumblr_ob6vv04yIP1tlwzgvo1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/07/03092414/tumblr_ob6vk1bBPa1tlwzgvo1_500.jpg");
+        imagesList.add("http://static0.passel.co/wp-content/uploads/2016/07/03092404/tumblr_o97ipvkger1ted1sho1_500.jpg");
+        return imagesList;
+    }
 
 
 }

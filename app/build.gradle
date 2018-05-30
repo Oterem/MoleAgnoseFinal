@@ -45,6 +45,7 @@ dependencies {
     implementation 'com.github.droidbyme:DroidDialog:c6decc7167'
     implementation 'com.github.deano2390:MaterialShowcaseView:1.2.0@aar'
     implementation 'com.willowtreeapps.spruce:spruce-android:1.0.1'
+    implementation 'com.github.mzelzoghbi:zgallery:0.3'
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
 }
