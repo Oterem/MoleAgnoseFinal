@@ -45,6 +45,10 @@
     <string name="show_case_gallery_text">You can browse images from your gallery and analyze them</string>
     <string name="show_case_history_text">Browse images that has been analyzed</string>
     <string name="show_case_links_text">Stay updated</string>
+    <string name="no_internet_connection_message">No internet connection</string>
+    <string name="progressDialog_uploading_image">Uploading image...</string>
+    <string name="progressDialog_downloading_image">Download diagnose...</string>
+
 
 
 </resources>
