@@ -96,6 +96,14 @@ public class MainActivity extends LoadingDialog
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            requestPermissions(new String[]{android.Manifest.permission.INTERNET}, 1);
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_NETWORK_STATE}, 1);
+
+        }
+        AWSMobileClient.getInstance().initialize(this).execute();
 
     }
 
@@ -234,8 +242,6 @@ public class MainActivity extends LoadingDialog
                 case ACTION_GET_CONTENT: //in case user is loading picture from gallery
                     try {
                         photoURI = data.getData();
-                        imageName = Utils.getPath(this, photoURI);
-                        imageName = imageName.replaceFirst(".*/(\\w+).*", "$1");
                         CropImage.activity(photoURI).start(this);
                     } catch (Exception e) {
                         Utils.makeToast(this, getString(R.string.create_file_error));
@@ -245,15 +251,17 @@ public class MainActivity extends LoadingDialog
                 case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
                     CropImage.ActivityResult result = CropImage.getActivityResult(data);
                     if (resultCode == RESULT_OK) {//Delete the full size image after the crop
-                        File fdelete = new File(photoURI.getPath());
-                        if (fdelete.exists()) {
-                            if (fdelete.delete()) {
-                                System.out.println("file Deleted :" + photoURI.getPath());
-                            } else {
-                                System.out.println("file not Deleted :" + photoURI.getPath());
-                            }
-                        }
+//                        File fdelete = new File(photoURI.getPath());
+//                        if (fdelete.exists()) {
+//                            if (fdelete.delete()) {
+//                                System.out.println("file Deleted :" + photoURI.getPath());
+//                            } else {
+//                                System.out.println("file not Deleted :" + photoURI.getPath());
+//                            }
+//                        }
                         photoURI = result.getUri();
+                        imageName = getPath(this, photoURI);
+                        imageName = imageName.replaceFirst(".*/(\\w+).*", "$1");
                         UploadToS3AsyncTask job = new UploadToS3AsyncTask();
                         if(Utils.isNetworkConnected(this)){
                             job.execute(photoURI);
@@ -266,6 +274,60 @@ public class MainActivity extends LoadingDialog
 
             }
         }
+    }
+
+
+    public static String getPath(final Context context, final Uri uri) {
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        Log.i("URI", uri + "");
+        String result = uri + "";
+        // DocumentProvider
+        //  if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+        if (isKitKat && (result.contains("media.documents"))) {
+            String[] ary = result.split("/");
+            int length = ary.length;
+            String imgary = ary[length - 1];
+            final String[] dat = imgary.split("%3A");
+            final String docId = dat[1];
+            final String type = dat[0];
+            Uri contentUri = null;
+            if ("image".equals(type)) {
+                contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            } else if ("video".equals(type)) {
+            } else if ("audio".equals(type)) {
+            }
+            final String selection = "_id=?";
+            final String[] selectionArgs = new String[]{
+                    dat[1]
+            };
+            return getDataColumn(context, contentUri, selection, selectionArgs);
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
     }
 
     /**
@@ -372,8 +434,10 @@ public class MainActivity extends LoadingDialog
                             .build();
 
             uploadedKey = (android_id + "_" + imageName).replace(".", "_");
-            TransferObserver uploadObserver =
-                    transferUtility.upload(UPLOAD_BUCKET, uploadedKey + ".jpg", new File(path));
+            Log.i(TAG, uploadedKey);
+//            TransferObserver uploadObserver =
+//                    transferUtility.upload(UPLOAD_BUCKET, uploadedKey + ".jpg", new File(path));
+            TransferObserver uploadObserver = transferUtility.upload(UPLOAD_BUCKET,uploadedKey+".jpg",new File(path));
 
             // Attach a listener to the observer to get state update and progress notifications
             uploadObserver.setTransferListener(new TransferListener() {
@@ -392,7 +456,6 @@ public class MainActivity extends LoadingDialog
                 public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                     float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
                     int percentDone = (int) percentDonef;
-                    onProgressUpdate(percentDone);
 
 
                     Log.d("YourActivity", "ID:" + id + " bytesCurrent: " + bytesCurrent
@@ -435,7 +498,8 @@ public class MainActivity extends LoadingDialog
         @Override
         protected Void doInBackground(Uri... Uri) {
 
-            String path = Utils.getPath(getApplicationContext(), Uri[0]);
+            String path = getPath(getApplicationContext(), Uri[0]);
+            Log.i("OT:",path);
             uploadWithTransferUtility(path);
             for(int i=0;i<TIME_FOR_AWS_LAMBDA;i++){
                 try {
@@ -479,7 +543,7 @@ public class MainActivity extends LoadingDialog
                         .build();
 
         Log.i(TAG, "OT3: Downloading from s3 "+nameToDownload);
-        Log.i(TAG, "key is: "+uploadedKey+".json");
+        Log.i(TAG, "key is: "+uploadedKey+"omri.json");
         TransferObserver downloadObserver =
                 transferUtility.download(DOWNLOAD_BUCKET,uploadedKey+".json",f);
 
@@ -523,17 +587,11 @@ public class MainActivity extends LoadingDialog
                         double val = bigger.getDouble("value");
                         Log.i(TAG, "========Final Score===========");
                         Log.i(TAG, "OT: "+name+", "+val);
-                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this)
-                                .setTitle("Your diagnose")
-                                .setMessage(name+": "+val)
-                                .setPositiveButton("Got it",new DialogInterface.OnClickListener(){
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        //deleteCache(getApplicationContext());
-                                    }
-                                });
                         hideProgressDialog();
-                        alertDialog.show();
+
+                        /*----------------Call for pop up diagnose-------------------------*/
+                        showPopUp("Diagnose", "your diagnose is:"+name+". result: "+val,val,0);
+                        /*---------------------------------------*/
                         Toast.makeText(getApplicationContext(),name+": "+val+"%",Toast.LENGTH_LONG);
                         Log.i(TAG, "========End of Final Score===========");
 
@@ -541,8 +599,6 @@ public class MainActivity extends LoadingDialog
                         Toast.makeText(getApplicationContext(),"Error parsing json1", Toast.LENGTH_LONG);
 
                     }
-
-
 
                 }
             }
