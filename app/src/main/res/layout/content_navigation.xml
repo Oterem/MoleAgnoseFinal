@@ -34,6 +34,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/nav_background_color"
                 android:gravity="center"
+                android:onClick="launchCamera"
                 android:orientation="vertical">
 
                 <ImageView
