@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -151,6 +153,8 @@ public class ListViewFragment extends Fragment {
             TextView t = v.findViewById(R.id.text_omri);
             TextView a = v.findViewById(R.id.text_terem);
             a.setText(placeholderList.get(position).getFriend());
+            Linkify.addLinks(a,Linkify.WEB_URLS);
+            a.setMovementMethod(LinkMovementMethod.getInstance());
             t.setText(placeholderList.get(position).getName());
 
             return v;

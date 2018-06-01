@@ -147,8 +147,6 @@ public class MainActivity extends LoadingDialog
                         String name = link.getString("name");
                         String url = link.getString("url");
                         Log.i(TAG,name+" "+url);
-                        //names_array[i] = name;
-                        //urls_array[i] = url;
                         names.add(name);
                         urls.add(url);
                     }
