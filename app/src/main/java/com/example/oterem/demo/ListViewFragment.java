@@ -6,9 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +14,27 @@ import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.oterem.demo.dummy.DummyContent;
-import com.example.oterem.demo.dummy.DummyContent.DummyItem;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.willowtreeapps.spruce.Spruce;
 import com.willowtreeapps.spruce.animation.DefaultAnimations;
 import com.willowtreeapps.spruce.sort.DefaultSort;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 
 public class ListViewFragment extends Fragment {
@@ -35,11 +45,25 @@ public class ListViewFragment extends Fragment {
 
     private ListView listView;
     private Animator spruceAnimator;
+    private List<ExampleData> placeHolderList;
+    private ArrayList<String> names;
+    private ArrayList<String> urls;
+
+
+    @Nullable
+    @Override
+    public Context getContext() {
+        return super.getContext();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
         listView = (ListView) container.findViewById(R.id.list_view);
+        Bundle b = getArguments();
+        names = b.getStringArrayList("names");
+        urls = b.getStringArrayList("urls");
+
 
         // Create the animator after the list view has finished laying out
         listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -49,10 +73,9 @@ public class ListViewFragment extends Fragment {
             }
         });
 
-        // Mock data objects
-        List<ExampleData> placeHolderList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            placeHolderList.add(new ExampleData());
+        placeHolderList = new ArrayList<>();
+        for (int i = 0; i < names.size(); i++) {
+            placeHolderList.add(new ExampleData(names.get(i),urls.get(i)));
         }
 
         // Remove default dividers and set adapter
@@ -81,6 +104,7 @@ public class ListViewFragment extends Fragment {
 
     private class ListViewAdapter extends BaseAdapter {
 
+
         private List<ExampleData> placeholderList;
         private LayoutInflater inflater;
 
@@ -100,8 +124,9 @@ public class ListViewFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                //initSpruce();
-                Utils.makeToast(getContext(),"shai ata gay");
+                int a = getCount();
+                String s = String.valueOf(a);
+                Utils.makeToast(getContext(),s);
             }
         }
 
@@ -122,17 +147,13 @@ public class ListViewFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            View v = getLayoutInflater().inflate(R.layout.view_placeholder,null);
+            TextView t = v.findViewById(R.id.text_omri);
+            TextView a = v.findViewById(R.id.text_terem);
+            a.setText(placeholderList.get(position).getFriend());
+            t.setText(placeholderList.get(position).getName());
 
-            View vi = convertView;
-            ViewHolder vh;
-
-            if (convertView == null) {
-                vi = inflater.inflate(R.layout.view_placeholder, null);
-                vh = new ViewHolder((RelativeLayout) vi);
-                vi.setTag(vh);
-            }
-
-            return vi;
+            return v;
         }
     }
 

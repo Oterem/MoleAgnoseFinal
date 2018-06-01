@@ -5,10 +5,10 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="nav_first_item">Camera</string>
-    <string name="nav_first_item_body">Press here to capture the mole</string>
+    <string name="nav_first_item_body">Diagnose using your camera</string>
 
     <string name="nav_second_item">Gallery</string>
-    <string name="nav_second_item_body">Browse images</string>
+    <string name="nav_second_item_body">Diagnose image from Gallery</string>
 
     <string name="nav_third_item">History</string>
     <string name="nav_third_item_body">View diagnosed images</string>
@@ -40,14 +40,22 @@
             https://github.com/Oterem/MoleAgnoseFinal\n\n
             Downlode it Fast and Help to save lives :)</string>
     <string name="pop_up_close_window">Got it!</string>
+    <!-- Start up showcase -->
     <string name="show_case_close_window">Got it!</string>
     <string name="show_case_camera_text">Take a picture of your mole. Then you can crop your picture. Try to focus on the mole</string>
     <string name="show_case_gallery_text">You can browse images from your gallery and analyze them</string>
     <string name="show_case_history_text">Browse images that has been analyzed</string>
     <string name="show_case_links_text">Stay updated</string>
+    <!-- Start up showcase -->
     <string name="no_internet_connection_message">No internet connection</string>
     <string name="progressDialog_uploading_image">Uploading image...</string>
     <string name="progressDialog_downloading_image">Download diagnose...</string>
+
+    <!-- Json request using Volley -->
+    <string name="links_json_url">https://s3.amazonaws.com/moleagnose-deployment/links.json</string>
+    <string name="json_array_name">links</string>
+    <!-- End of Json request using Volley -->
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

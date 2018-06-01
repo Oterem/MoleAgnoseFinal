@@ -29,22 +29,33 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.oterem.demo.ListViewFragment;
 
+import java.util.ArrayList;
+
 public class ListViewActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intentExtra = getIntent();
+        Bundle b = intentExtra.getExtras();
+        ArrayList<String> names = b.getStringArrayList("names");
+        ArrayList<String> urls = b.getStringArrayList("urls");
         setContentView(R.layout.list_view_fragment);
 
+
+
         FragmentManager fm = getSupportFragmentManager();
+
         Fragment listViewFragment = fm.findFragmentById(R.id.list_view_fragment);
         if (listViewFragment == null) {
             listViewFragment = ListViewFragment.newInstance();
+            listViewFragment.setArguments(b);
             fm.beginTransaction()
                     .replace(R.id.list_view_fragment, listViewFragment)
                     .commit();

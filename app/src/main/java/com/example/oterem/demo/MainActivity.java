@@ -50,6 +50,12 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.droidbyme.dialoglib.AnimUtils;
 import com.droidbyme.dialoglib.DroidDialog;
 
@@ -57,6 +63,8 @@ import com.mzelzoghbi.zgallery.ZGallery;
 import com.mzelzoghbi.zgallery.entities.ZColor;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -65,6 +73,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
@@ -86,6 +95,11 @@ public class MainActivity extends LoadingDialog
     private String imageName = "";
     private String uploadedKey = "";
     private String nameToDownload = "";
+    private RequestQueue mQueue;
+    public static ArrayList<String>names;
+    public static ArrayList<String>urls;
+    private String[] names_array;
+    private String[] urls_array;
     //--------------------------END Global var --------------------------------------
 
     @Override
@@ -94,6 +108,10 @@ public class MainActivity extends LoadingDialog
         setContentView(R.layout.activity_navigation);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mQueue = Volley.newRequestQueue(this);
+        names = new ArrayList<>();
+        urls = new ArrayList<>();
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -112,7 +130,39 @@ public class MainActivity extends LoadingDialog
 
         }
         AWSMobileClient.getInstance().initialize(this).execute();
+        jsonParse();
 
+    }
+
+    private void jsonParse(){
+        String url = getResources().getString(R.string.links_json_url);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray josnArray = response.getJSONArray(getResources().getString(R.string.json_array_name));
+                    names_array = new String[2];
+                    for(int i=0;i<josnArray.length();i++){
+                        JSONObject link = josnArray.getJSONObject(i);
+                        String name = link.getString("name");
+                        String url = link.getString("url");
+                        Log.i(TAG,name+" "+url);
+                        //names_array[i] = name;
+                        //urls_array[i] = url;
+                        names.add(name);
+                        urls.add(url);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        mQueue.add(request);
     }
 
     @Override
@@ -189,6 +239,11 @@ public class MainActivity extends LoadingDialog
     }
     public void startLinksActivity(View v){
         Intent i = new Intent(this, ListViewActivity.class);
+        Bundle bundle = new Bundle();
+        //bundle.putString("a", "omriterem");
+        bundle.putStringArrayList("names",names);
+        bundle.putStringArrayList("urls",urls);
+        i.putExtras(bundle);
         startActivity(i);
     }
 
