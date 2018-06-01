@@ -22,6 +22,7 @@ import java.util.Locale;
 
 public abstract class Utils {
 
+
     public static File createImageFile(Context context) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
@@ -128,5 +129,14 @@ public abstract class Utils {
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
+    }
+
+    public static int decideDiagnose(double mel, int low, int high){
+        if(mel<(low/100))//no melanoma at all
+            return 1;
+        else if(mel<(high/100))
+            return 0;
+        else
+            return -1;
     }
 }

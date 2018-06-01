@@ -39,7 +39,13 @@
     <string name="tellAboutUs_message">I\'m really want to recommend to you to use MoleAgnose\n\n
             https://github.com/Oterem/MoleAgnoseFinal\n\n
             Downlode it Fast and Help to save lives :)</string>
+    <!-- start PopUp -->
     <string name="pop_up_close_window">Got it!</string>
+    <string name="pop_up_title">Your Diagnose</string>
+    <string name="pop_up_body_good">Looks Good! :)</string>
+    <string name="pop_up_body_medium">Looks medium :/</string>
+    <string name="pop_up_body_bad">Looks bad :(</string>
+    <!-- end PopUp -->
     <!-- Start up showcase -->
     <string name="show_case_close_window">Got it!</string>
     <string name="show_case_camera_text">Take a picture of your mole. Then you can crop your picture. Try to focus on the mole</string>
@@ -55,6 +61,9 @@
     <string name="links_json_url">https://s3.amazonaws.com/moleagnose-deployment/links.json</string>
     <string name="json_array_name">links</string>
     <!-- End of Json request using Volley -->
+    <!-- start AWS strings -->
+    <string name="aws_error_download">Error while downloading diagnose</string>
+    <!-- end AWS strings -->
 
 
     <!-- TODO: Remove or change this placeholder text -->

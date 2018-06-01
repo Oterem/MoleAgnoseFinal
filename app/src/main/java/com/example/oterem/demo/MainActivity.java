@@ -89,6 +89,8 @@ public class MainActivity extends LoadingDialog
     private static final String DOWNLOAD_BUCKET = "moleagnose-results";
     private static final String TAG = "MainActivity";
     private static final int TIME_FOR_AWS_LAMBDA = 10;
+    private static final int LOW_BOUND = 30;
+    private static final int HIGH_BOUND = 70;
     //--------------------------End static Vars -------------------------------------
     //----------------------------- Global Vars --------------------------------------
     private Uri photoURI;
@@ -175,7 +177,7 @@ public class MainActivity extends LoadingDialog
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        showCase("true");
+        //showCase("true");
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.navigation, menu);
         return true;
@@ -401,18 +403,18 @@ public class MainActivity extends LoadingDialog
     /**
      * This function creates a pop-up window with user diagnose
      *
-     * @param title      - String
-     * @param body       - String: The content of pop up
+     *
+     *
      * @param precentage - double: The prediction of melanoma
      * @param level      - int (-1,0,1) The severity of diagnose. 1-Good, 0-medium risk, (-1)-Bad
      */
-    private void showPopUp(String title, String body, double precentage, int level) {
+    private void showPopUp(double precentage, int level) {
         switch (level) {
             case -1:
                 new DroidDialog.Builder(this)
                         .icon(R.drawable.diagnose_bad)
-                        .title(title)
-                        .content(body)
+                        .title(getResources().getString(R.string.pop_up_title))
+                        .content(getResources().getString(R.string.pop_up_body_bad))
                         .color(ContextCompat.getColor(this, R.color.diagnose_bad), 0, ContextCompat.getColor(this, R.color.diagnose_bad))
                         .positiveButton(getResources().getString(R.string.pop_up_close_window), new DroidDialog.onPositiveListener() {
                             @Override
@@ -432,8 +434,8 @@ public class MainActivity extends LoadingDialog
             case 0:
                 new DroidDialog.Builder(this)
                         .icon(R.drawable.diagnose_medium_risk)
-                        .title(title)
-                        .content(body)
+                        .title(getResources().getString(R.string.pop_up_title))
+                        .content(getResources().getString(R.string.pop_up_body_medium))
                         .color(ContextCompat.getColor(this, R.color.diagnose_meduim), 0, ContextCompat.getColor(this, R.color.diagnose_meduim))
                         .positiveButton(getResources().getString(R.string.pop_up_close_window), new DroidDialog.onPositiveListener() {
                             @Override
@@ -451,8 +453,8 @@ public class MainActivity extends LoadingDialog
             case 1:
                 new DroidDialog.Builder(this)
                         .icon(R.drawable.diagnose_good)
-                        .title(title)
-                        .content(body)
+                        .title(getResources().getString(R.string.pop_up_title))
+                        .content(getResources().getString(R.string.pop_up_body_good))
                         .color(ContextCompat.getColor(this, R.color.diagnose_ok), 0, ContextCompat.getColor(this, R.color.diagnose_ok))
                         .positiveButton(getResources().getString(R.string.pop_up_close_window), new DroidDialog.onPositiveListener() {
                             @Override
@@ -506,9 +508,8 @@ public class MainActivity extends LoadingDialog
                             .build();
 
             uploadedKey = (android_id + "_" + imageName).replace(".", "_");
-            Log.i(TAG, uploadedKey);
-//            TransferObserver uploadObserver =
-//                    transferUtility.upload(UPLOAD_BUCKET, uploadedKey + ".jpg", new File(path));
+            Log.i(TAG, "uploadKey is: "+uploadedKey);
+            transferUtility.upload(UPLOAD_BUCKET, uploadedKey + ".jpg", new File(path));
             TransferObserver uploadObserver = transferUtility.upload(UPLOAD_BUCKET,uploadedKey+".jpg",new File(path));
 
             // Attach a listener to the observer to get state update and progress notifications
@@ -517,10 +518,9 @@ public class MainActivity extends LoadingDialog
                 @Override
                 public void onStateChanged(int id, TransferState state) {
                     if (TransferState.COMPLETED == state) {
-                        // Handle a completed upload.
                         Log.d("YourActivity", "Upload Complete");
-
-
+                        DownloadFromS3AsyncTask myWork = new DownloadFromS3AsyncTask();
+                        myWork.execute();
                     }
                 }
 
@@ -561,26 +561,14 @@ public class MainActivity extends LoadingDialog
         }
 
         @Override
-        protected void onPostExecute(Void Void) {
-            hideProgressDialog();
-            DownloadFromS3AsyncTask myWork = new DownloadFromS3AsyncTask();
-            myWork.execute();
-        }
+        protected void onPostExecute(Void Void) {}
 
         @Override
         protected Void doInBackground(Uri... Uri) {
 
             String path = getPath(getApplicationContext(), Uri[0]);
-            Log.i("OT:",path);
+            Log.i(TAG,"starting uploadAsyncTask - do in background");
             uploadWithTransferUtility(path);
-            for(int i=0;i<TIME_FOR_AWS_LAMBDA;i++){
-                try {
-                    Thread.sleep(1000);
-
-                }catch (Exception e){
-                    e.printStackTrace();;
-                }
-            }
             return null;
         }
     }
@@ -595,16 +583,20 @@ public class MainActivity extends LoadingDialog
         @Override
         protected void onPreExecute()
         {
-
+            hideProgressDialog();
             showProgressDialog(getString(R.string.progressDialog_downloading_image));}
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-
-        }
+        protected void onPostExecute(Void aVoid) {}
     }
 
     public void downloadFromS3(){
+
+        try{
+            Thread.sleep(1000*TIME_FOR_AWS_LAMBDA);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         File f = Utils.getTempFile(getApplicationContext());
         nameToDownload = f.getName();
@@ -616,8 +608,8 @@ public class MainActivity extends LoadingDialog
                         .s3Client(new AmazonS3Client(AWSMobileClient.getInstance().getCredentialsProvider()))
                         .build();
 
-        Log.i(TAG, "OT3: Downloading from s3 "+nameToDownload);
-        Log.i(TAG, "key is: "+uploadedKey+"omri.json");
+        Log.i(TAG, "Downloading from s3 "+uploadedKey+".json");
+        Log.i(TAG, "key is: "+uploadedKey+".json");
         TransferObserver downloadObserver =
                 transferUtility.download(DOWNLOAD_BUCKET,uploadedKey+".json",f);
 
@@ -661,14 +653,20 @@ public class MainActivity extends LoadingDialog
                         Log.i(TAG, "========Final Score===========");
                         Log.i(TAG, "OT: "+name+", "+val);
                         hideProgressDialog();
+                        double melanoma = json.getDouble("melanoma");
+                        int diagnose = Utils.decideDiagnose(melanoma,LOW_BOUND,HIGH_BOUND);
+                        showPopUp(0.0,diagnose);
+
+
+
+//
 
                         /*----------------Call for pop up diagnose-------------------------*/
-                        showPopUp("Diagnose", "your diagnose is:"+name+". result: "+val,val,0);
+                        //showPopUp("Diagnose", "your diagnose is:"+name+". result: "+val,val,0);
                         /*---------------------------------------*/
                         Toast.makeText(getApplicationContext(),name+": "+val+"%",Toast.LENGTH_LONG);
                         Log.i(TAG, "========End of Final Score===========");
 
-                        //saveImage(getApplicationContext(),,"omri","jpg");
 
 
 
@@ -687,6 +685,7 @@ public class MainActivity extends LoadingDialog
 
             @Override
             public void onError(int id, Exception ex) {
+                Utils.makeToast(getApplicationContext(),getResources().getString(R.string.aws_error_download));
 
             }
         });
@@ -694,8 +693,7 @@ public class MainActivity extends LoadingDialog
 
     }
 
-
-
+    
     public void Savefile(String name, String path) {
         File direct = new File(Environment.getExternalStorageDirectory() + "/MyAppFolder/MyApp/");
         File file = new File(Environment.getExternalStorageDirectory() + "/MyAppFolder/MyApp/"+name+".jpg");
