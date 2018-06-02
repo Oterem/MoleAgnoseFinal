@@ -32,6 +32,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.oterem.demo.ListViewFragment;
 
@@ -44,8 +45,9 @@ public class ListViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent intentExtra = getIntent();
         Bundle b = intentExtra.getExtras();
-        ArrayList<String> names = b.getStringArrayList("names");
-        ArrayList<String> urls = b.getStringArrayList("urls");
+//        ArrayList<String> names = b.getStringArrayList("names");
+//        ArrayList<String> urls = b.getStringArrayList("urls");
+//        ArrayList<String> imageUrls = b.getStringArrayList("imageUrls");
         setContentView(R.layout.list_view_fragment);
 
 
@@ -78,21 +80,6 @@ public class ListViewActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.sort_option:
-//                startActivity(new Intent(this, SpruceActivity.class)
-//                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
-//                break;
-//            case R.id.list_view_option:
-//                break;
-//            case R.id.recycler_option:
-//                startActivity(new Intent(this, RecyclerActivity.class)
-//                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
-//                break;
-//            default:
-//                finish();
-//                break;
-//        }
         return super.onOptionsItemSelected(item);
     }
 

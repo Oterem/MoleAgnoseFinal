@@ -85,6 +85,30 @@ public abstract class Utils {
         return null;
     }
 
+    public static void deleteCache(Context context) {
+        try {
+            File dir = context.getCacheDir();
+            deleteDir(dir);
+        } catch (Exception e) {}
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else if(dir!= null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
+        }
+    }
+
     public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
         final String column = "_data";
@@ -131,7 +155,7 @@ public abstract class Utils {
         return cm.getActiveNetworkInfo() != null;
     }
 
-    public static int decideDiagnose(double mel, int low, int high){
+    public static int decideDiagnose(double mel, double low, double high){
         if(mel<(low/100))//no melanoma at all
             return 1;
         else if(mel<(high/100))

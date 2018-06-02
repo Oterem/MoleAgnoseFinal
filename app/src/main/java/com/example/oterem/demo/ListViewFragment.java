@@ -3,6 +3,9 @@ package com.example.oterem.demo;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.willowtreeapps.spruce.Spruce;
 import com.willowtreeapps.spruce.animation.DefaultAnimations;
 import com.willowtreeapps.spruce.sort.DefaultSort;
@@ -50,6 +55,7 @@ public class ListViewFragment extends Fragment {
     private List<ExampleData> placeHolderList;
     private ArrayList<String> names;
     private ArrayList<String> urls;
+    private ArrayList<String> imageUrls;
 
 
     @Nullable
@@ -65,6 +71,7 @@ public class ListViewFragment extends Fragment {
         Bundle b = getArguments();
         names = b.getStringArrayList("names");
         urls = b.getStringArrayList("urls");
+        imageUrls = b.getStringArrayList("imageUrls");
 
 
         // Create the animator after the list view has finished laying out
@@ -77,7 +84,7 @@ public class ListViewFragment extends Fragment {
 
         placeHolderList = new ArrayList<>();
         for (int i = 0; i < names.size(); i++) {
-            placeHolderList.add(new ExampleData(names.get(i),urls.get(i)));
+            placeHolderList.add(new ExampleData(names.get(i),urls.get(i),imageUrls.get(i)));
         }
 
         // Remove default dividers and set adapter
@@ -126,9 +133,7 @@ public class ListViewFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                int a = getCount();
-                String s = String.valueOf(a);
-                Utils.makeToast(getContext(),s);
+                Toast.makeText(getContext(),"omriiiii",Toast.LENGTH_LONG);
             }
         }
 
@@ -150,12 +155,22 @@ public class ListViewFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View v = getLayoutInflater().inflate(R.layout.view_placeholder,null);
-            TextView t = v.findViewById(R.id.text_omri);
-            TextView a = v.findViewById(R.id.text_terem);
-            a.setText(placeholderList.get(position).getFriend());
-            Linkify.addLinks(a,Linkify.WEB_URLS);
-            a.setMovementMethod(LinkMovementMethod.getInstance());
-            t.setText(placeholderList.get(position).getName());
+            TextView name = v.findViewById(R.id.links_text_name);
+            TextView url = v.findViewById(R.id.links_text_url);
+            ImageView image = v.findViewById(R.id.links_image);
+            name.setText(placeholderList.get(position).getName());
+            url.setText(placeholderList.get(position).getUrl());
+            Linkify.addLinks(url,Linkify.WEB_URLS);
+            url.setMovementMethod(LinkMovementMethod.getInstance());
+            if(placeholderList.get(position).getImageUrl() != "null" ){
+                Log.i(null,placeholderList.get(position).getImageUrl()+position);
+                Glide.with(getContext()).load(placeholderList.get(position).getImageUrl()).into(image);
+            }
+            else {
+                Uri uri = Uri.parse("android.resource://com.example.oterem.demo/drawable/logo.png");
+               image.setImageURI(uri);
+               //Glide.with(getContext()).load(R.drawable.logo1).into(image);
+            }
 
             return v;
         }

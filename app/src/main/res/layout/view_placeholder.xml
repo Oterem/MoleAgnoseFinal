@@ -28,7 +28,7 @@
                 android:background="@color/white">
 
     <ImageView
-        android:id="@+id/square"
+        android:id="@+id/links_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"
@@ -39,27 +39,27 @@
         android:src="@drawable/logo"/>
 
     <TextView
-        android:id="@+id/text_omri"
-        android:layout_width="150dp"
-        android:layout_height="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_toRightOf="@id/square"
-        android:layout_toEndOf="@id/square"
-        android:alpha="1"
-        android:background="@color/fake_paragraphs"/>
-
-    <TextView
-        android:id="@+id/text_terem"
+        android:id="@+id/links_text_name"
         android:layout_width="250dp"
         android:layout_height="20dp"
-        android:layout_below="@id/text_omri"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
-        android:layout_toEndOf="@id/square"
-        android:layout_toRightOf="@id/square"
+        android:layout_toEndOf="@id/links_image"
+        android:layout_toRightOf="@id/links_image"
+        android:alpha="1"
+        android:background="@color/fake_paragraphs" />
+
+    <TextView
+        android:id="@+id/links_text_url"
+        android:layout_width="250dp"
+        android:layout_height="20dp"
+        android:layout_below="@id/links_text_name"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_toEndOf="@id/links_image"
+        android:layout_toRightOf="@id/links_image"
         android:alpha="0.5"
         android:background="@color/fake_paragraphs" />
 

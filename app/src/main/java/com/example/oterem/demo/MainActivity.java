@@ -82,6 +82,13 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class MainActivity extends LoadingDialog
         implements NavigationView.OnNavigationItemSelectedListener {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Utils.deleteCache(getApplicationContext());
+
+    }
+
     //---------------------------- static Vars --------------------------------------
     private static final int ACTION_IMAGE_CAPTURE = 1;
     private static final int ACTION_GET_CONTENT = 2;
@@ -98,22 +105,23 @@ public class MainActivity extends LoadingDialog
     private String uploadedKey = "";
     private String nameToDownload = "";
     private RequestQueue mQueue;
-    public static ArrayList<String>names;
-    public static ArrayList<String>urls;
-    private String[] names_array;
-    private String[] urls_array;
+    private static ArrayList<String>names;
+    private static ArrayList<String>urls;
+    private static ArrayList<String>imageUrls;
+    private static int counter = 0;
     //--------------------------END Global var --------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        jsonParse();
         setContentView(R.layout.activity_navigation);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mQueue = Volley.newRequestQueue(this);
         names = new ArrayList<>();
         urls = new ArrayList<>();
-
+        imageUrls = new ArrayList<>();
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -132,7 +140,7 @@ public class MainActivity extends LoadingDialog
 
         }
         AWSMobileClient.getInstance().initialize(this).execute();
-        jsonParse();
+
 
     }
 
@@ -143,14 +151,16 @@ public class MainActivity extends LoadingDialog
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray josnArray = response.getJSONArray(getResources().getString(R.string.json_array_name));
-                    names_array = new String[2];
                     for(int i=0;i<josnArray.length();i++){
                         JSONObject link = josnArray.getJSONObject(i);
                         String name = link.getString("name");
                         String url = link.getString("url");
-                        Log.i(TAG,name+" "+url);
+                        String imageUrl = link.getString("image");
+
+                        Log.i(TAG,name+" "+url+" "+imageUrl);
                         names.add(name);
                         urls.add(url);
+                        imageUrls.add(imageUrl);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -177,7 +187,7 @@ public class MainActivity extends LoadingDialog
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //showCase("true");
+        showCase("true"+counter);
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.navigation, menu);
         return true;
@@ -196,6 +206,7 @@ public class MainActivity extends LoadingDialog
             return true;
         }
         if (id == R.id.action_help) {
+            showCase("true"+counter);
 
         }
 
@@ -215,7 +226,7 @@ public class MainActivity extends LoadingDialog
         } else if (id == R.id.nav_gallery) {
             galleryBrowse(null);
         } else if (id == R.id.nav_history) {
-            galleryActivity();
+            galleryActivity(null);
 
         } else if (id == R.id.nav_links) {
             startLinksActivity(null);
@@ -243,6 +254,7 @@ public class MainActivity extends LoadingDialog
         //bundle.putString("a", "omriterem");
         bundle.putStringArrayList("names",names);
         bundle.putStringArrayList("urls",urls);
+        bundle.putStringArrayList("imageUrls",imageUrls);
         i.putExtras(bundle);
         startActivity(i);
     }
@@ -280,8 +292,6 @@ public class MainActivity extends LoadingDialog
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-//        TextView t = (TextView) findViewById(R.id.textView);
-//        t.setText("");
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), ACTION_GET_CONTENT);
     }
     /*-------------------------------------------------------------------*/
@@ -295,9 +305,6 @@ public class MainActivity extends LoadingDialog
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-
-            //histogram_btn.setEnabled(true);
-
 
             switch (requestCode) {
                 case ACTION_IMAGE_CAPTURE: //in case user is taking a picture
@@ -330,7 +337,7 @@ public class MainActivity extends LoadingDialog
 //                            }
 //                        }
                         photoURI = result.getUri();
-                        imageName = getPath(this, photoURI);
+                        imageName = Utils.getPath(this, photoURI);
                         imageName = imageName.replaceFirst(".*/(\\w+).*", "$1");
                         UploadToS3AsyncTask job = new UploadToS3AsyncTask();
                         if(Utils.isNetworkConnected(this)){
@@ -347,39 +354,6 @@ public class MainActivity extends LoadingDialog
     }
 
 
-    public static String getPath(final Context context, final Uri uri) {
-        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-        Log.i("URI", uri + "");
-        String result = uri + "";
-        // DocumentProvider
-        //  if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-        if (isKitKat && (result.contains("media.documents"))) {
-            String[] ary = result.split("/");
-            int length = ary.length;
-            String imgary = ary[length - 1];
-            final String[] dat = imgary.split("%3A");
-            final String docId = dat[1];
-            final String type = dat[0];
-            Uri contentUri = null;
-            if ("image".equals(type)) {
-                contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            } else if ("video".equals(type)) {
-            } else if ("audio".equals(type)) {
-            }
-            final String selection = "_id=?";
-            final String[] selectionArgs = new String[]{
-                    dat[1]
-            };
-            return getDataColumn(context, contentUri, selection, selectionArgs);
-        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
-            return getDataColumn(context, uri, null, null);
-        }
-        // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-        return null;
-    }
 
     public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
@@ -481,6 +455,7 @@ public class MainActivity extends LoadingDialog
         config.setDelay(500); // half second between each showcase view
 
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, msg);
+        counter++;
         //sequence.setConfig(config);
 
         sequence.addSequenceItem(camera,
@@ -493,6 +468,7 @@ public class MainActivity extends LoadingDialog
                 getResources().getString(R.string.show_case_links_text), getResources().getString(R.string.show_case_close_window));
         sequence.start();
     }
+
 
 
     private class UploadToS3AsyncTask extends AsyncTask<Uri, Integer, Void> {
@@ -566,7 +542,7 @@ public class MainActivity extends LoadingDialog
         @Override
         protected Void doInBackground(Uri... Uri) {
 
-            String path = getPath(getApplicationContext(), Uri[0]);
+            String path = Utils.getPath(getApplicationContext(), Uri[0]);
             Log.i(TAG,"starting uploadAsyncTask - do in background");
             uploadWithTransferUtility(path);
             return null;
@@ -625,7 +601,7 @@ public class MainActivity extends LoadingDialog
                     File json_string = new File(myDisk+File.separator+nameToDownload);
                     String res = "";
                     FileInputStream fis = null;
-                    JSONObject json = null;
+                    JSONObject json;
                     try {
 
 
@@ -693,7 +669,7 @@ public class MainActivity extends LoadingDialog
 
     }
 
-    
+
     public void Savefile(String name, String path) {
         File direct = new File(Environment.getExternalStorageDirectory() + "/MyAppFolder/MyApp/");
         File file = new File(Environment.getExternalStorageDirectory() + "/MyAppFolder/MyApp/"+name+".jpg");
@@ -719,7 +695,7 @@ public class MainActivity extends LoadingDialog
 
 
 
-    public void galleryActivity() {
+    public void galleryActivity(View v) {
         ZGallery.with(this, getDummyImageList())
                 .setToolbarTitleColor(ZColor.WHITE)
                 .setGalleryBackgroundColor(ZColor.WHITE)

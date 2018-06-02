@@ -6,19 +6,23 @@ package com.example.oterem.demo;
 
 public class ExampleData {
 
-    public String name;
-    public String friend;
+    private String name;
+    private String url;
+    private String imageUrl;
 
-    public ExampleData(String name, String friend){
+    public ExampleData(String name, String url, String imageUrl){
         this.name = name;
-        this.friend = friend;
+        this.url = url;
+        this.imageUrl = imageUrl;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getFriend() {
-        return friend;
+    public String getImageUrl() {return imageUrl;}
+
+    public String getUrl() {
+        return url;
     }
 }

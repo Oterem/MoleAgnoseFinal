@@ -138,6 +138,7 @@
 
             <LinearLayout
                 android:id="@+id/content_history"
+                android:onClick="galleryActivity"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/nav_background_color"
@@ -197,9 +198,9 @@
                 <ImageView
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:background="@drawable/cercleshape_green"
+                    android:background="@drawable/cercleshape_blue"
                     android:padding="10dp"
-                    android:src="@android:drawable/ic_lock_idle_alarm" />
+                    android:src="@drawable/info_logo" />
 
                 <TextView
                     android:layout_width="wrap_content"
