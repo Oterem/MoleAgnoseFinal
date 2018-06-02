@@ -114,11 +114,12 @@ public class MainActivity extends LoadingDialog
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mQueue = Volley.newRequestQueue(this);
         jsonParse();
         setContentView(R.layout.activity_navigation);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mQueue = Volley.newRequestQueue(this);
+
         names = new ArrayList<>();
         urls = new ArrayList<>();
         imageUrls = new ArrayList<>();
