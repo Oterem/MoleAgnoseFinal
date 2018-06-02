@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static android.support.v4.content.ContextCompat.startActivity;
+
 public abstract class Utils {
 
 
@@ -162,5 +164,17 @@ public abstract class Utils {
             return 0;
         else
             return -1;
+    }
+
+    public static void sendMail(Context context){
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{context.getResources().getString(R.string.about_email)});
+        i.putExtra(Intent.EXTRA_SUBJECT, "I want to report a bug");
+        try {
+            context.startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(context, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

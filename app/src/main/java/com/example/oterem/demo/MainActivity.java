@@ -235,7 +235,7 @@ public class MainActivity extends LoadingDialog
         } else if (id == R.id.nav_share) {
             Utils.tellAboutUs(this, null);
         } else if (id == R.id.nav_send) {
-
+            Utils.sendMail(this);
 
         }
 
