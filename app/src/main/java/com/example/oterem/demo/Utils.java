@@ -5,6 +5,11 @@ package com.example.oterem.demo;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -15,14 +20,30 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import static android.support.v4.content.ContextCompat.startActivity;
 
 public abstract class Utils {
+//    Bitmap src, String watermark, Point location, int color, int alpha, int size, boolean underline) {
+
+        //-------Image water mark parameters-------
+    private static final Point TEXT_LOCATION_ON_IMAGE = new Point (20,40);
+    private static final int TEXT_COLOR_ON_IMAGE = Color.GREEN;
+    private static final int TEXT_ALPHA_ON_IMAGE = 220;// text Transparency Level (val from 0 to 255)
+    private static final int TEXT_SIZE_ON_IMAGE = 36;
+    private static final boolean TEXT_UNDRTLINE_ON_IMAGE = false;
+    private static final String IMAGES_RESULTS_FOLDER_NAME = "/moleAgnoseResults";
+    private static final String IMAGES_RESULTS_FOLDER_DIR = Environment.getExternalStorageDirectory().toString() +IMAGES_RESULTS_FOLDER_NAME;
+    //-------Image water mark parameters-------
 
 
     public static File createImageFile(Context context) throws IOException {
@@ -176,5 +197,79 @@ public abstract class Utils {
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(context, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static void addWaterMarkandSave(Context context,Uri uri,String diag){
+        Bitmap bitmap=null;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        DateFormat df = new SimpleDateFormat(context.getString(R.string.text_on_image_result_date_pattern));
+        String date = df.format(Calendar.getInstance().getTime());
+        String textOnImage = date+"\n\n"+diag;
+
+
+
+        Bitmap newBit=mark(bitmap,textOnImage,TEXT_LOCATION_ON_IMAGE , TEXT_COLOR_ON_IMAGE , TEXT_ALPHA_ON_IMAGE , TEXT_SIZE_ON_IMAGE , TEXT_UNDRTLINE_ON_IMAGE);
+        saveImage(newBit,"test");
+    }
+
+
+    public static Bitmap mark(Bitmap src, String watermark, Point location, int color, int alpha, int size, boolean underline) {
+        int w = src.getWidth();
+        int h = src.getHeight();
+        Bitmap result = Bitmap.createBitmap(w, h, src.getConfig());
+
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(src, 0, 0, null);
+
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setAlpha(alpha);
+        paint.setTextSize(size);
+        paint.setAntiAlias(true);
+        paint.setUnderlineText(underline);
+        canvas.drawText(watermark, location.x, location.y, paint);
+
+        return result;
+    }
+
+    private static void saveImage(Bitmap finalBitmap, String image_name) {
+
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root+"/moleAgnoseResults");
+        myDir.mkdirs();
+        DateFormat df = new SimpleDateFormat("ddMMyyyy-HHmmss");
+        String date = df.format(Calendar.getInstance().getTime());
+        String fname = "moleAgonse-" + date+ ".jpg";
+        File file = new File(myDir, fname);
+        if (file.exists()) file.delete();
+        Log.i("LOAD", root + fname);
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static ArrayList<String> resultImageList(){
+        ArrayList<String> imagesList = new ArrayList<>();
+        File f = new File(IMAGES_RESULTS_FOLDER_DIR);
+        if(f.isDirectory()) {
+            File[] files = f.listFiles();
+            for (File inFile : files) {
+                if (inFile.exists()) {
+                    imagesList.add(inFile.getAbsolutePath());
+                    String test = inFile.getAbsolutePath();
+                }
+            }
+        }
+
+
+        return imagesList;
     }
 }
