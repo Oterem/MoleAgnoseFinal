@@ -31,6 +31,7 @@ import com.willowtreeapps.spruce.sort.DefaultSort;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ListViewFragment extends Fragment {
@@ -155,20 +156,17 @@ public class ListViewFragment extends Fragment {
             View v = getLayoutInflater().inflate(R.layout.view_placeholder,null);
             TextView name = v.findViewById(R.id.links_text_name);
             TextView url = v.findViewById(R.id.links_text_url);
-            ImageView image = v.findViewById(R.id.links_image);
             name.setText(placeholderList.get(position).getName());
             url.setText(placeholderList.get(position).getUrl());
             Linkify.addLinks(url,Linkify.WEB_URLS);
             url.setMovementMethod(LinkMovementMethod.getInstance());
-            if(placeholderList.get(position).getImageUrl() != "null" ){
+            String imageUrl = placeholderList.get(position).getImageUrl();
+            if(!(Objects.equals(imageUrl,new String("null")))){
+                ImageView image = v.findViewById(R.id.links_image);
                 Log.i(null,placeholderList.get(position).getImageUrl()+position);
                 Glide.with(getContext()).load(placeholderList.get(position).getImageUrl()).into(image);
             }
-            else {
-                Uri uri = Uri.parse("android.resource://com.example.oterem.demo/drawable/logo.png");
-               image.setImageURI(uri);
-               //Glide.with(getContext()).load(R.drawable.logo1).into(image);
-            }
+
 
             return v;
         }
