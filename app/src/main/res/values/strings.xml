@@ -71,6 +71,9 @@
     <string name="text_on_image_result_date_pattern">dd/MM/yyyy, HH:mm</string>
     <string name="no_image_in_history_to_show">There are no images in history</string>
     <!-- end Text to print on Image result -->
+    <!-- Start listview -->
+    <string name="list_view_title">Useful Links</string>
+    <!-- End listview -->
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

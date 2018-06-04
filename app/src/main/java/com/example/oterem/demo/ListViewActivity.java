@@ -67,7 +67,7 @@ public class ListViewActivity extends AppCompatActivity {
         setSupportActionBar(toolBar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("hello");
+            getSupportActionBar().setTitle(getResources().getString(R.string.list_view_title));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }

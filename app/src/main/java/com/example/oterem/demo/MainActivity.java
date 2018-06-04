@@ -104,6 +104,7 @@ public class MainActivity extends LoadingDialog
     private String imageName = "";
     private String uploadedKey = "";
     private String nameToDownload = "";
+    private String helpUrl = "";
     private RequestQueue mQueue;
     private static ArrayList<String>names;
     private static ArrayList<String>urls;
@@ -151,9 +152,10 @@ public class MainActivity extends LoadingDialog
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray josnArray = response.getJSONArray(getResources().getString(R.string.json_array_name));
-                    for(int i=0;i<josnArray.length();i++){
-                        JSONObject link = josnArray.getJSONObject(i);
+                    JSONArray jsonArray = response.getJSONArray(getResources().getString(R.string.json_array_name));
+                    helpUrl = response.getString("helpUrl");
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject link = jsonArray.getJSONObject(i);
                         String name = link.getString("name");
                         String url = link.getString("url");
                         String imageUrl = link.getString("image");
@@ -207,8 +209,9 @@ public class MainActivity extends LoadingDialog
             return true;
         }
         if (id == R.id.action_help) {
-            showCase("true"+counter);
-
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(helpUrl));
+            startActivity(i);
         }
 
 
