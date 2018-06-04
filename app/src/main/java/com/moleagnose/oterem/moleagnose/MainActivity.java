@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+
 import android.widget.Toast;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
@@ -252,9 +253,6 @@ public class MainActivity extends LoadingDialog
             File photoFile = null;
             try {
                 photoFile = Utils.createImageFile(this);
-//                imageName = photoFile.getName();
-//                String[] tempStrs = imageName.split("\\.");
-//                imageName = tempStrs[0];
                 imageName = photoFile.getName().split("\\.")[0];
             } catch (IOException ex) {
                 Utils.makeToast(this, getString(R.string.create_file_error));
@@ -264,7 +262,6 @@ public class MainActivity extends LoadingDialog
             if (photoFile != null) {
                 photoURI = FileProvider.getUriForFile(this,
                         "com.moleagnose.oterem.moleagnose.fileprovider", photoFile);
-//                getBaseContext().grantUriPermission("com.moleagnose.oterem.moleagnose", photoURI, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 getBaseContext().grantUriPermission("com.moleagnose.oterem.moleagnose.fileprovider",photoURI,Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, ACTION_IMAGE_CAPTURE);
@@ -374,7 +371,6 @@ public class MainActivity extends LoadingDialog
                         .icon(R.drawable.diagnose_bad)
                         .title(getResources().getString(R.string.pop_up_title))
                         .content(getResources().getString(R.string.pop_up_body_bad))
-                        .typeface("regular.ttf")
                         .color(ContextCompat.getColor(this, R.color.diagnose_bad), 0, ContextCompat.getColor(this, R.color.diagnose_bad))
                         .positiveButton(getResources().getString(R.string.pop_up_close_window), new DroidDialog.onPositiveListener() {
                             @Override

@@ -42,9 +42,9 @@
     <!-- start PopUp -->
     <string name="pop_up_close_window">Got it!</string>
     <string name="pop_up_title">Your Diagnose</string>
-    <string name="pop_up_body_good">Risk level: LOW</string>
-    <string name="pop_up_body_medium">Risk level: Medium</string>
-    <string name="pop_up_body_bad">Looks bad :(</string>
+    <string name="pop_up_body_good">Risk level: LOW\n\nWe recommend on a routine check every 3 months</string>
+    <string name="pop_up_body_medium">Risk level: MEDIUM\n\nWe recommend on seeing a doctor soon</string>
+    <string name="pop_up_body_bad">Risk level: HIGH\n\nWe recommend on seeing a doctor ASAP</string>
     <!-- end PopUp -->
     <!-- Start up showcase -->
     <string name="show_case_close_window">Got it!</string>
