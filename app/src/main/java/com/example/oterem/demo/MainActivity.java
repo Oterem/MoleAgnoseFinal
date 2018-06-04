@@ -665,43 +665,18 @@ public class MainActivity extends LoadingDialog
     }
 
 
-    public void Savefile(String name, String path) {
-        File direct = new File(Environment.getExternalStorageDirectory() + "/MyAppFolder/MyApp/");
-        File file = new File(Environment.getExternalStorageDirectory() + "/MyAppFolder/MyApp/"+name+".jpg");
-
-        if(!direct.exists()) {
-            direct.mkdir();
-        }
-
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-                FileChannel src = new FileInputStream(path).getChannel();
-                FileChannel dst = new FileOutputStream(file).getChannel();
-                dst.transferFrom(src, 0, src.size());
-                src.close();
-                dst.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-
     public void galleryActivity(View v) {
         ArrayList<String> imagesList = Utils.resultImageList();
         if(!imagesList.isEmpty()) {
             ZGallery.with(this, imagesList)
                     .setToolbarTitleColor(ZColor.WHITE)
                     .setGalleryBackgroundColor(ZColor.WHITE)
-                    .setToolbarColorResId(R.color.colorPrimary)
+                    .setToolbarColorResId(R.color.header_color)
                     .setTitle("Moles you have captured")
                     .show();
         }
         else{
-            Utils.makeToast(this,getString(R.string.no_internet_connection_message));
+            Utils.makeToast(this,getString(R.string.no_image_in_history_to_show));
         }
     }
 

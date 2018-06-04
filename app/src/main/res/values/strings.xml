@@ -36,9 +36,9 @@
     <string name="about">About</string>
     <string name="app_name">MoleAgnose</string>
     <string name="create_file_error">Error occurred while creating the File</string>
-    <string name="tellAboutUs_message">I\'m really want to recommend to you to use MoleAgnose\n\n
+    <string name="tellAboutUs_message">I want to recommend to you on MoleAgnose\n\n
             https://github.com/Oterem/MoleAgnoseFinal\n\n
-            Downlode it Fast and Help to save lives :)</string>
+            Download it and Help to save lives :)</string>
     <!-- start PopUp -->
     <string name="pop_up_close_window">Got it!</string>
     <string name="pop_up_title">Your Diagnose</string>
@@ -69,7 +69,7 @@
     <string name="text_on_image_result_val_zero">Medium Risk</string>
     <string name="text_on_image_result_val_one">Low Risk</string>
     <string name="text_on_image_result_date_pattern">dd/MM/yyyy, HH:mm</string>
-    <string name="no_image_in_history_to_show">There is no images in history</string>
+    <string name="no_image_in_history_to_show">There are no images in history</string>
     <!-- end Text to print on Image result -->
 
     <!-- TODO: Remove or change this placeholder text -->

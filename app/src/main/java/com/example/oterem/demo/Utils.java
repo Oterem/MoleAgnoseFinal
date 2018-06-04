@@ -42,7 +42,8 @@ public abstract class Utils {
     private static final int TEXT_SIZE_ON_IMAGE = 36;
     private static final boolean TEXT_UNDRTLINE_ON_IMAGE = false;
     private static final String IMAGES_RESULTS_FOLDER_NAME = "/moleAgnoseResults";
-    private static final String IMAGES_RESULTS_FOLDER_DIR = Environment.getExternalStorageDirectory().toString() +IMAGES_RESULTS_FOLDER_NAME;
+    private static String diagnosedImagesLocation = "";
+    private static String TAG = "";
     //-------Image water mark parameters-------
 
 
@@ -213,7 +214,7 @@ public abstract class Utils {
 
 
         Bitmap newBit=mark(bitmap,textOnImage,TEXT_LOCATION_ON_IMAGE , TEXT_COLOR_ON_IMAGE , TEXT_ALPHA_ON_IMAGE , TEXT_SIZE_ON_IMAGE , TEXT_UNDRTLINE_ON_IMAGE);
-        saveImage(newBit,"test");
+        saveImage(newBit,"test",context);
     }
 
 
@@ -236,17 +237,28 @@ public abstract class Utils {
         return result;
     }
 
-    private static void saveImage(Bitmap finalBitmap, String image_name) {
+    public static File getPrivateAlbumStorageDir(Context context, String albumName) {
+        // Get the directory for the app's private pictures directory.
+        File file = new File(context.getExternalFilesDir(
+                Environment.DIRECTORY_PICTURES), albumName);
+        if (!file.mkdirs()) {
+            Log.e(TAG, "Directory not created");
+        }
+        return file;
+    }
 
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root+"/moleAgnoseResults");
-        myDir.mkdirs();
+    private static void saveImage(Bitmap finalBitmap, String image_name,Context context) {
+
+
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File myDir = getPrivateAlbumStorageDir(context,"Moleagnose");
+        diagnosedImagesLocation = myDir.getAbsolutePath();
         DateFormat df = new SimpleDateFormat("ddMMyyyy-HHmmss");
         String date = df.format(Calendar.getInstance().getTime());
         String fname = "moleAgonse-" + date+ ".jpg";
         File file = new File(myDir, fname);
         if (file.exists()) file.delete();
-        Log.i("LOAD", root + fname);
+        Log.i(TAG, root + fname);
         try {
             FileOutputStream out = new FileOutputStream(file);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
@@ -258,7 +270,7 @@ public abstract class Utils {
     }
     public static ArrayList<String> resultImageList(){
         ArrayList<String> imagesList = new ArrayList<>();
-        File f = new File(IMAGES_RESULTS_FOLDER_DIR);
+        File f = new File(diagnosedImagesLocation);
         if(f.isDirectory()) {
             File[] files = f.listFiles();
             for (File inFile : files) {
@@ -268,8 +280,6 @@ public abstract class Utils {
                 }
             }
         }
-
-
         return imagesList;
     }
 }
