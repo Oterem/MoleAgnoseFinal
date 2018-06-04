@@ -25,11 +25,11 @@ public class About extends AppCompatActivity {
                 .isRTL(false)
                 .setImage(R.drawable.logo)
                 .setDescription(getResources().getString(R.string.about_description))
-                .addItem(new Element().setTitle("Version 1.1"))
+                .addItem(new Element().setTitle("Version 1.3"))
                 .addGroup("Connect with us")
                 .addEmail(getResources().getString(R.string.about_email))
                 .addGitHub(getResources().getString(R.string.about_github),"fork us!")
-                .addPlayStore("com.ideashower.readitlater.pro")
+                .addPlayStore("com.moleagnose.oterem.moleagnose")
                 .addItem(createCopyright())
                 .create();
         setContentView(aboutPage);

@@ -3,6 +3,7 @@ package com.moleagnose.oterem.moleagnose;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -45,6 +47,7 @@ public class ListViewFragment extends Fragment {
     private ArrayList<String> imageUrls;
 
 
+
     @Nullable
     @Override
     public Context getContext() {
@@ -67,6 +70,7 @@ public class ListViewFragment extends Fragment {
             public void onGlobalLayout() {
                 initSpruce();
             }
+
         });
 
         placeHolderList = new ArrayList<>();
@@ -78,6 +82,8 @@ public class ListViewFragment extends Fragment {
         listView.setDivider(null);
         listView.setDividerHeight(0);
         listView.setAdapter(new ListViewAdapter(placeHolderList));
+
+
 
         return inflater.inflate(R.layout.list_view_fragment, container, false);
     }
@@ -111,6 +117,7 @@ public class ListViewFragment extends Fragment {
 
         class ViewHolder implements View.OnClickListener{
 
+
             private RelativeLayout parent;
 
             ViewHolder(RelativeLayout parent) {
@@ -118,11 +125,15 @@ public class ListViewFragment extends Fragment {
                 this.parent.setOnClickListener(this);
             }
 
+
+
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(),"omriiiii",Toast.LENGTH_LONG);
-            }
+            public void onClick(View v) {}
         }
+
+
+
+
 
         @Override
         public int getCount() {
