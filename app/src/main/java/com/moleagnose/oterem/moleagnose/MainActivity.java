@@ -263,8 +263,9 @@ public class MainActivity extends LoadingDialog
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 photoURI = FileProvider.getUriForFile(this,
-                        "com.com.example.oterem.demo.fileprovider", photoFile);
-                getBaseContext().grantUriPermission("com.omri.opencvdemo", photoURI, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        "com.moleagnose.oterem.moleagnose.fileprovider", photoFile);
+//                getBaseContext().grantUriPermission("com.moleagnose.oterem.moleagnose", photoURI, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                getBaseContext().grantUriPermission("com.moleagnose.oterem.moleagnose.fileprovider",photoURI,Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, ACTION_IMAGE_CAPTURE);
             }
@@ -373,6 +374,7 @@ public class MainActivity extends LoadingDialog
                         .icon(R.drawable.diagnose_bad)
                         .title(getResources().getString(R.string.pop_up_title))
                         .content(getResources().getString(R.string.pop_up_body_bad))
+                        .typeface("regular.ttf")
                         .color(ContextCompat.getColor(this, R.color.diagnose_bad), 0, ContextCompat.getColor(this, R.color.diagnose_bad))
                         .positiveButton(getResources().getString(R.string.pop_up_close_window), new DroidDialog.onPositiveListener() {
                             @Override

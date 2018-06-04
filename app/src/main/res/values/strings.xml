@@ -36,14 +36,14 @@
     <string name="about">About</string>
     <string name="app_name">MoleAgnose</string>
     <string name="create_file_error">Error occurred while creating the File</string>
-    <string name="tellAboutUs_message">I want to recommend to you on MoleAgnose\n\n
-            https://github.com/Oterem/MoleAgnoseFinal\n\n
+    <string name="tellAboutUs_message">I want to recommend you on MoleAgnose\n\n
+            https://play.google.com/store/apps/details?id=com.moleagnose.oterem.moleagnose\n\n
             Download it and Help to save lives :)</string>
     <!-- start PopUp -->
     <string name="pop_up_close_window">Got it!</string>
     <string name="pop_up_title">Your Diagnose</string>
-    <string name="pop_up_body_good">Looks Good! :)</string>
-    <string name="pop_up_body_medium">Looks medium :/</string>
+    <string name="pop_up_body_good">Risk level: LOW</string>
+    <string name="pop_up_body_medium">Risk level: Medium</string>
     <string name="pop_up_body_bad">Looks bad :(</string>
     <!-- end PopUp -->
     <!-- Start up showcase -->
