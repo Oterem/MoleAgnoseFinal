@@ -15,7 +15,7 @@ allprojects {
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.example.oterem.demo"
+        applicationId "com.moleagnose.oterem.moleagnose"
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1

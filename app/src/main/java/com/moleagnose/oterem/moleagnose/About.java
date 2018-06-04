@@ -1,17 +1,10 @@
-package com.example.oterem.demo;
+package com.moleagnose.oterem.moleagnose;
 
-import android.icu.util.RangeValueIterator;
-import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.view.Gravity;
 
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.Calendar;
 

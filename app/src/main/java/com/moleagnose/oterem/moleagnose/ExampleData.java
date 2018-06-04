@@ -1,4 +1,4 @@
-package com.example.oterem.demo;
+package com.moleagnose.oterem.moleagnose;
 
 /**
  * Created by oterem on 30/05/2018.

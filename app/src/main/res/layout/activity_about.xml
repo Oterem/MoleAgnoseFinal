@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.oterem.demo.About">
+    tools:context="com.moleagnose.oterem.moleagnose.About">
 
 </android.support.constraint.ConstraintLayout>

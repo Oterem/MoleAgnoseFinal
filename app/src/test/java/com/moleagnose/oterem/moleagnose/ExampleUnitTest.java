@@ -1,4 +1,4 @@
-package com.example.oterem.demo;
+package com.moleagnose.oterem.moleagnose;
 
 import org.junit.Test;
 

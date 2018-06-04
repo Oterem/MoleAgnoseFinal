@@ -1,4 +1,4 @@
-package com.example.oterem.demo;
+package com.moleagnose.oterem.moleagnose;
 
 
 
@@ -28,9 +28,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
-
-import static android.support.v4.content.ContextCompat.startActivity;
 
 public abstract class Utils {
 //    Bitmap src, String watermark, Point location, int color, int alpha, int size, boolean underline) {

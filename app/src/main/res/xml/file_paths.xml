@@ -2,5 +2,5 @@
 
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <external-path name="my_images"
-        fullpath="Android/data/com.example.oterem.demo/files/Pictures" />
+        fullpath="Android/data/com.moleagnose.oterem.demo/files/Pictures" />
 </paths>

@@ -20,7 +20,7 @@
  *
  */
 
-package com.example.oterem.demo;
+package com.moleagnose.oterem.moleagnose;
 
 import android.content.Intent;
 import android.os.Bundle;

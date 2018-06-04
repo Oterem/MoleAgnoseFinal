@@ -1,4 +1,4 @@
-package com.example.oterem.demo.dummy;
+package com.moleagnose.oterem.moleagnose.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

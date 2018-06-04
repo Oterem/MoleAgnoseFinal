@@ -1,4 +1,4 @@
-package com.example.oterem.demo;
+package com.moleagnose.oterem.moleagnose;
 
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
