@@ -247,7 +247,6 @@ public abstract class Utils {
 
         String root = Environment.getExternalStorageDirectory().getAbsolutePath();
         File myDir = getPrivateAlbumStorageDir(context,"Moleagnose");
-        diagnosedImagesLocation = myDir.getAbsolutePath();
         DateFormat df = new SimpleDateFormat("ddMMyyyy-HHmmss");
         String date = df.format(Calendar.getInstance().getTime());
         String fname = "moleAgonse-" + date+ ".jpg";
