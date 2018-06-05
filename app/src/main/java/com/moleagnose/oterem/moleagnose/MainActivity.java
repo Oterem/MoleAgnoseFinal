@@ -90,7 +90,6 @@ public class MainActivity extends LoadingDialog
     private static ArrayList<String>names;
     private static ArrayList<String>urls;
     private static ArrayList<String>imageUrls;
-    private static int counter = 0;
     //--------------------------END Global var --------------------------------------
 
     @Override
@@ -171,7 +170,7 @@ public class MainActivity extends LoadingDialog
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        showCase("true"+counter);
+        showCase("DummyString");
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.navigation, menu);
         return true;
@@ -236,10 +235,10 @@ public class MainActivity extends LoadingDialog
     public void startLinksActivity(View v){
         Intent i = new Intent(this, ListViewActivity.class);
         Bundle bundle = new Bundle();
-        //bundle.putString("a", "omriterem");
         bundle.putStringArrayList("names",names);
         bundle.putStringArrayList("urls",urls);
         bundle.putStringArrayList("imageUrls",imageUrls);
+        bundle.putString("helpUrl",helpUrl);
         i.putExtras(bundle);
         startActivity(i);
     }
@@ -431,7 +430,6 @@ public class MainActivity extends LoadingDialog
         config.setDelay(500); // half second between each showcase view
 
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, msg);
-        counter++;
         //sequence.setConfig(config);
 
         sequence.addSequenceItem(camera,
@@ -608,18 +606,8 @@ public class MainActivity extends LoadingDialog
                         double melanoma = json.getDouble("melanoma");
                         int diagnose = Utils.decideDiagnose(melanoma,LOW_BOUND,HIGH_BOUND);
                         showPopUp(0.0,diagnose);
-
-
-
-//
-
-                        /*----------------Call for pop up diagnose-------------------------*/
-                        //showPopUp("Diagnose", "your diagnose is:"+name+". result: "+val,val,0);
-                        /*---------------------------------------*/
                         Toast.makeText(getApplicationContext(),name+": "+val+"%",Toast.LENGTH_LONG);
                         Log.i(TAG, "========End of Final Score===========");
-
-
 
 
                     }catch (Exception e){
@@ -638,6 +626,7 @@ public class MainActivity extends LoadingDialog
             @Override
             public void onError(int id, Exception ex) {
                 Utils.makeToast(getApplicationContext(),getResources().getString(R.string.aws_error_download));
+                ex.printStackTrace();
 
             }
         });
