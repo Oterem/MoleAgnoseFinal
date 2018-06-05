@@ -38,8 +38,7 @@ public abstract class Utils {
     private static final int TEXT_ALPHA_ON_IMAGE = 220;// text Transparency Level (val from 0 to 255)
     private static final int TEXT_SIZE_ON_IMAGE = 36;
     private static final boolean TEXT_UNDRTLINE_ON_IMAGE = false;
-    private static final String IMAGES_RESULTS_FOLDER_NAME = "/moleAgnoseResults";
-    private static String diagnosedImagesLocation = "";
+
     private static String TAG = "";
     //-------Image water mark parameters-------
 
@@ -54,7 +53,6 @@ public abstract class Utils {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-        String imageName = imageFileName;
         // Save a file: path for use with ACTION_VIEW intents
 //        currentPhotoPath = image.getAbsolutePath();
         return image;
@@ -265,9 +263,10 @@ public abstract class Utils {
             e.printStackTrace();
         }
     }
-    public static ArrayList<String> resultImageList(){
+    public static ArrayList<String> resultImageList(Context context){
         ArrayList<String> imagesList = new ArrayList<>();
-        File f = new File(diagnosedImagesLocation);
+
+        File f = new File(getPrivateAlbumStorageDir(context,"Moleagnose").getAbsolutePath());
         if(f.isDirectory()) {
             File[] files = f.listFiles();
             for (File inFile : files) {

@@ -636,7 +636,7 @@ public class MainActivity extends LoadingDialog
 
 
     public void galleryActivity(View v) {
-        ArrayList<String> imagesList = Utils.resultImageList();
+        ArrayList<String> imagesList = Utils.resultImageList(getApplicationContext());
         if(!imagesList.isEmpty()) {
             ZGallery.with(this, imagesList)
                     .setToolbarTitleColor(ZColor.WHITE)
