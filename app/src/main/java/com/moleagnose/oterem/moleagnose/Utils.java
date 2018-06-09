@@ -195,7 +195,7 @@ public abstract class Utils {
         }
     }
 
-    public static void addWaterMarkandSave(Context context,Uri uri,String diag){
+    public static String addWaterMarkandSave(Context context,Uri uri,String diag){
         Bitmap bitmap=null;
         try {
             bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
@@ -206,10 +206,8 @@ public abstract class Utils {
         String date = df.format(Calendar.getInstance().getTime());
         String textOnImage = date+"\n\n"+diag;
 
-
-
         Bitmap newBit=mark(bitmap,textOnImage,TEXT_LOCATION_ON_IMAGE , TEXT_COLOR_ON_IMAGE , TEXT_ALPHA_ON_IMAGE , TEXT_SIZE_ON_IMAGE , TEXT_UNDRTLINE_ON_IMAGE);
-        saveImage(newBit,"test",context);
+        return saveImage(newBit,"test",context);
     }
 
 
@@ -242,7 +240,15 @@ public abstract class Utils {
         return file;
     }
 
-    private static void saveImage(Bitmap finalBitmap, String image_name,Context context) {
+    /***
+     *
+     * @param finalBitmap
+     * @param image_name
+     * @param context
+     * @return the path where the diagnosed image was saved (this path will be helpful for the sharing
+     * it (File-provider issue)
+     */
+    private static String saveImage(Bitmap finalBitmap, String image_name,Context context) {
 
 
         String root = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -261,7 +267,9 @@ public abstract class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return file.getAbsolutePath();
     }
+
     public static ArrayList<String> resultImageList(Context context){
         ArrayList<String> imagesList = new ArrayList<>();
 

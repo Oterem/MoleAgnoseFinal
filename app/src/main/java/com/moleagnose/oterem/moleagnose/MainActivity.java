@@ -3,10 +3,8 @@ package com.moleagnose.oterem.moleagnose;
 
 import android.app.Dialog;
 
-import android.content.Context;
 import android.content.Intent;
 
-import android.database.Cursor;
 import android.net.Uri;
 
 import android.os.AsyncTask;
@@ -79,6 +77,7 @@ public class MainActivity extends LoadingDialog
     private static final int TIME_FOR_AWS_LAMBDA = 10;
     private static final int LOW_BOUND = 30;
     private static final int HIGH_BOUND = 70;
+    private static String pathOfFinalImage = "";
     //--------------------------End static Vars -------------------------------------
     //----------------------------- Global Vars --------------------------------------
     private Uri photoURI;
@@ -334,26 +333,21 @@ public class MainActivity extends LoadingDialog
         }
     }
 
+    /***
+     * This function opens a share functionality
+     * @param path - The path of the diagnosed image, The path is required for the file provider
+     */
+    private void shareDiagnose(String path){
+        final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-
-    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
-        Cursor cursor = null;
-        final String column = "_data";
-        final String[] projection = {
-                column
-        };
-        try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                final int column_index = cursor.getColumnIndexOrThrow(column);
-                return cursor.getString(column_index);
-            }
-        } finally {
-            if (cursor != null)
-                cursor.close();
-        }
-        return null;
+        File file = new File(path);
+        Uri u = FileProvider.getUriForFile(this,"com.moleagnose.oterem.moleagnose.fileprovider",file);
+        shareIntent.setDataAndType(u,"image/*");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, u);
+        startActivity(shareIntent);
     }
+
 
     /**
      * This function creates a pop-up window with user diagnose
@@ -366,11 +360,19 @@ public class MainActivity extends LoadingDialog
     private void showPopUp(double precentage, int level) {
         switch (level) {
             case -1:
+                pathOfFinalImage = Utils.addWaterMarkandSave(getApplicationContext(),photoURI,getString(R.string.text_on_image_result_val_minus_one));
                 new DroidDialog.Builder(this)
                         .icon(R.drawable.diagnose_bad)
                         .title(getResources().getString(R.string.pop_up_title))
                         .content(getResources().getString(R.string.pop_up_body_bad))
                         .color(ContextCompat.getColor(this, R.color.diagnose_bad), 0, ContextCompat.getColor(this, R.color.diagnose_bad))
+                        .negativeButton(getResources().getString(R.string.share), new DroidDialog.onNegativeListener() {
+                            @Override
+                            public void onNegative(Dialog dialog) {
+                                shareDiagnose(pathOfFinalImage);
+                                dialog.dismiss();
+                            }
+                        })
                         .positiveButton(getResources().getString(R.string.pop_up_close_window), new DroidDialog.onPositiveListener() {
                             @Override
                             public void onPositive(Dialog dialog) {
@@ -379,15 +381,22 @@ public class MainActivity extends LoadingDialog
                         })
                         .animation(AnimUtils.AnimFadeInOut)
                         .show();
-                Utils.addWaterMarkandSave(getApplicationContext(),photoURI,getString(R.string.text_on_image_result_val_minus_one));
 
                 break;
             case 0:
+                pathOfFinalImage = Utils.addWaterMarkandSave(getApplicationContext(),photoURI,getString(R.string.text_on_image_result_val_zero));
                 new DroidDialog.Builder(this)
                         .icon(R.drawable.diagnose_medium_risk)
                         .title(getResources().getString(R.string.pop_up_title))
                         .content(getResources().getString(R.string.pop_up_body_medium))
                         .color(ContextCompat.getColor(this, R.color.diagnose_meduim), 0, ContextCompat.getColor(this, R.color.diagnose_meduim))
+                        .negativeButton(getResources().getString(R.string.share), new DroidDialog.onNegativeListener() {
+                            @Override
+                            public void onNegative(Dialog dialog) {
+                                shareDiagnose(pathOfFinalImage);
+                                dialog.dismiss();
+                            }
+                        })
                         .positiveButton(getResources().getString(R.string.pop_up_close_window), new DroidDialog.onPositiveListener() {
                             @Override
                             public void onPositive(Dialog dialog) {
@@ -396,16 +405,24 @@ public class MainActivity extends LoadingDialog
                         })
                         .animation(AnimUtils.AnimFadeInOut)
                         .show();
-                Utils.addWaterMarkandSave(getApplicationContext(),photoURI,getString(R.string.text_on_image_result_val_zero));
+
                 break;
 
 
             case 1:
+                pathOfFinalImage = Utils.addWaterMarkandSave(getApplicationContext(),photoURI,getString(R.string.text_on_image_result_val_one));
                 new DroidDialog.Builder(this)
                         .icon(R.drawable.diagnose_good)
                         .title(getResources().getString(R.string.pop_up_title))
                         .content(getResources().getString(R.string.pop_up_body_good))
                         .color(ContextCompat.getColor(this, R.color.diagnose_ok), 0, ContextCompat.getColor(this, R.color.diagnose_ok))
+                        .negativeButton(getResources().getString(R.string.share), new DroidDialog.onNegativeListener() {
+                            @Override
+                            public void onNegative(Dialog dialog) {
+                                shareDiagnose(pathOfFinalImage);
+                                dialog.dismiss();
+                            }
+                        })
                         .positiveButton(getResources().getString(R.string.pop_up_close_window), new DroidDialog.onPositiveListener() {
                             @Override
                             public void onPositive(Dialog dialog) {
@@ -414,7 +431,6 @@ public class MainActivity extends LoadingDialog
                         })
                         .animation(AnimUtils.AnimFadeInOut)
                         .show();
-                Utils.addWaterMarkandSave(getApplicationContext(),photoURI,getString(R.string.text_on_image_result_val_one));
                 break;
 
         }
