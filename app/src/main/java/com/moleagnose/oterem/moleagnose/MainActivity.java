@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
@@ -27,15 +28,18 @@ import android.view.MenuItem;
 
 import android.widget.Toast;
 
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -57,6 +61,7 @@ import java.util.ArrayList;
 
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
 
 
 public class MainActivity extends LoadingDialog
@@ -82,6 +87,7 @@ public class MainActivity extends LoadingDialog
     //----------------------------- Global Vars --------------------------------------
     private Uri photoURI;
     private String imageName = "";
+    private String imageExtenstion = "";
     private String uploadedKey = "";
     private String nameToDownload = "";
     private String helpUrl = "";
@@ -89,6 +95,7 @@ public class MainActivity extends LoadingDialog
     private static ArrayList<String>names;
     private static ArrayList<String>urls;
     private static ArrayList<String>imageUrls;
+    private JSONArray jsonArray;
     //--------------------------END Global var --------------------------------------
 
     @Override
@@ -99,7 +106,7 @@ public class MainActivity extends LoadingDialog
         setContentView(R.layout.activity_navigation);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        //These ArrayLists will store data coming from JSON
         names = new ArrayList<>();
         urls = new ArrayList<>();
         imageUrls = new ArrayList<>();
@@ -122,16 +129,16 @@ public class MainActivity extends LoadingDialog
         }
         AWSMobileClient.getInstance().initialize(this).execute();
 
-
     }
 
     private void jsonParse(){
         String url = getResources().getString(R.string.links_json_url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    JSONArray jsonArray = response.getJSONArray(getResources().getString(R.string.json_array_name));
+                    jsonArray = response.getJSONArray(getResources().getString(R.string.json_array_name));
                     helpUrl = response.getString("helpUrl");
                     for(int i=0;i<jsonArray.length();i++){
                         JSONObject link = jsonArray.getJSONObject(i);
@@ -154,6 +161,7 @@ public class MainActivity extends LoadingDialog
                 error.printStackTrace();
             }
         });
+        request.setRetryPolicy(new DefaultRetryPolicy(50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(request);
     }
 
@@ -189,6 +197,10 @@ public class MainActivity extends LoadingDialog
         }
         if (id == R.id.action_help) {
             Intent i = new Intent(Intent.ACTION_VIEW);
+            //We check if the url downloaded from JSON in aws. if not, we switch to backup
+            if(helpUrl.equals("")){
+                helpUrl = getResources().getString(R.string.backup_help_url);
+            }
             i.setData(Uri.parse(helpUrl));
             startActivity(i);
         }
@@ -212,7 +224,9 @@ public class MainActivity extends LoadingDialog
             galleryActivity(null);
 
         } else if (id == R.id.nav_links) {
+
             startLinksActivity(null);
+
 
         } else if (id == R.id.nav_share) {
             Utils.tellAboutUs(this, null);
@@ -232,6 +246,12 @@ public class MainActivity extends LoadingDialog
         startActivity(i);
     }
     public void startLinksActivity(View v){
+        if(names.isEmpty()){
+            if(Utils.isNetworkConnected(getApplicationContext())){
+                jsonParse();
+            }
+            Utils.makeToast(getApplicationContext(),getResources().getString(R.string.internet_error_loading_links));
+        }
         Intent i = new Intent(this, ListViewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("names",names);
@@ -265,6 +285,18 @@ public class MainActivity extends LoadingDialog
                 startActivityForResult(takePictureIntent, ACTION_IMAGE_CAPTURE);
             }
         }
+    }
+
+    public void setTimer(long seconds){
+        new CountDownTimer(seconds*1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                hideProgressDialog();
+            }
+        }.start();
     }
 
     public void galleryBrowse(View v) {
@@ -308,16 +340,9 @@ public class MainActivity extends LoadingDialog
                 case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
                     CropImage.ActivityResult result = CropImage.getActivityResult(data);
                     if (resultCode == RESULT_OK) {//Delete the full size image after the crop
-//                        File fdelete = new File(photoURI.getPath());
-//                        if (fdelete.exists()) {
-//                            if (fdelete.delete()) {
-//                                System.out.println("file Deleted :" + photoURI.getPath());
-//                            } else {
-//                                System.out.println("file not Deleted :" + photoURI.getPath());
-//                            }
-//                        }
                         photoURI = result.getUri();
                         imageName = Utils.getPath(this, photoURI);
+                        imageExtenstion = imageName.substring(imageName.lastIndexOf(".") + 1);
                         imageName = imageName.replaceFirst(".*/(\\w+).*", "$1");
                         UploadToS3AsyncTask job = new UploadToS3AsyncTask();
                         if(Utils.isNetworkConnected(this)){
@@ -464,6 +489,7 @@ public class MainActivity extends LoadingDialog
     private class UploadToS3AsyncTask extends AsyncTask<Uri, Integer, Void> {
 
         public void uploadWithTransferUtility(String path) {
+            Log.i(TAG,imageName);
             String android_id = Settings.Secure.getString(getBaseContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID);
             TransferUtility transferUtility =
@@ -475,8 +501,8 @@ public class MainActivity extends LoadingDialog
 
             uploadedKey = (android_id + "_" + imageName).replace(".", "_");
             Log.i(TAG, "uploadKey is: "+uploadedKey);
-            transferUtility.upload(UPLOAD_BUCKET, uploadedKey + ".jpg", new File(path));
-            TransferObserver uploadObserver = transferUtility.upload(UPLOAD_BUCKET,uploadedKey+".jpg",new File(path));
+            transferUtility.upload(UPLOAD_BUCKET, uploadedKey + "." + imageExtenstion, new File(path));
+            TransferObserver uploadObserver = transferUtility.upload(UPLOAD_BUCKET,uploadedKey + "." + imageExtenstion,new File(path));
 
             // Attach a listener to the observer to get state update and progress notifications
             uploadObserver.setTransferListener(new TransferListener() {
@@ -574,10 +600,9 @@ public class MainActivity extends LoadingDialog
                         .s3Client(new AmazonS3Client(AWSMobileClient.getInstance().getCredentialsProvider()))
                         .build();
 
-        Log.i(TAG, "Downloading from s3 "+uploadedKey+".json");
-        Log.i(TAG, "key is: "+uploadedKey+".json");
+        Log.i(TAG, "Downloading from s3 "+uploadedKey + "_" + imageExtenstion+".json");
         TransferObserver downloadObserver =
-                transferUtility.download(DOWNLOAD_BUCKET,uploadedKey+".json",f);
+                transferUtility.download(DOWNLOAD_BUCKET,uploadedKey + "_" + imageExtenstion+".json",f);
 
         downloadObserver.setTransferListener(new TransferListener() {
 
@@ -641,6 +666,7 @@ public class MainActivity extends LoadingDialog
 
             @Override
             public void onError(int id, Exception ex) {
+                hideProgressDialog();
                 Utils.makeToast(getApplicationContext(),getResources().getString(R.string.aws_error_download));
                 ex.printStackTrace();
 

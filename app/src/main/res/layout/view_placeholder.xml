@@ -22,27 +22,24 @@
         android:id="@+id/links_text_name"
         android:layout_width="250dp"
         android:layout_height="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/links_text_url"
+        android:layout_alignTop="@+id/links_image"
         android:textColor="#000000"
-        android:textSize="@dimen/about_item_text_size"
-        android:layout_toEndOf="@id/links_image"
-        android:layout_toRightOf="@id/links_image"
-         />
+        android:textSize="@dimen/about_item_text_size" />
 
     <TextView
         android:id="@+id/links_text_url"
         android:layout_width="250dp"
         android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
         android:layout_below="@id/links_text_name"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
-        android:textColor="#000000"
         android:layout_marginTop="20dp"
         android:layout_toEndOf="@id/links_image"
         android:layout_toRightOf="@id/links_image"
-         />
+        android:textColor="#000000" />
 
     <View
         android:layout_width="match_parent"
