@@ -49,6 +49,10 @@
     <!-- end PopUp -->
     <!-- Start of showcase -->
     <string name="show_case_close_window">Got it!</string>
+    <string name="show_case_close_disclaimer">I agree</string>
+    <string name="show_case_title_disclaimer">Disclaimer</string>
+    <string name="show_case_disclaimer">The information on this App is not a substitute for professional medical advice, diagnosis or treatment. All content, including text, graphics, images and information, contained on or available through this App is for general information purposes only
+    \n\nYou are strongly encouraged to confirm any information obtained from or through this App with your physician or another professional healthcare provider and to review all information regarding any medical condition or treatment with your physician or other a professional healthcare provider. </string>
     <string name="show_case_camera_text">Take a picture of your mole. Then you can crop your picture. Try to focus on the mole</string>
     <string name="show_case_gallery_text">You can browse images from your gallery and analyze them</string>
     <string name="show_case_history_text">Browse images that has been analyzed</string>
@@ -80,8 +84,7 @@
     <string name="internet_error_loading_links">This feature requires internet connection</string>
     <!-- End listview -->
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="history_activity_title">Moles you have captured</string>
 
 
 </resources>

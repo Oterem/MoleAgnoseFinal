@@ -131,6 +131,10 @@ public class MainActivity extends LoadingDialog
 
     }
 
+    /**
+     * This function downloads link.json from AWS and insert relevant data to
+     * the relevant arrays.
+     */
     private void jsonParse(){
         String url = getResources().getString(R.string.links_json_url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -177,7 +181,7 @@ public class MainActivity extends LoadingDialog
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        showCase("DummyString");
+        showCase("DummyString");//activate showCase
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.navigation, menu);
         return true;
@@ -287,17 +291,6 @@ public class MainActivity extends LoadingDialog
         }
     }
 
-    public void setTimer(long seconds){
-        new CountDownTimer(seconds*1000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-            }
-
-            public void onFinish() {
-                hideProgressDialog();
-            }
-        }.start();
-    }
 
     public void galleryBrowse(View v) {
 
@@ -463,6 +456,23 @@ public class MainActivity extends LoadingDialog
     }
 
     private void showCase(String msg) {
+
+        //Showing Disclaimer only on first use after installing the app
+        new DroidDialog.Builder(this)
+                .icon(R.drawable.info_logo)
+                .title(getResources().getString(R.string.show_case_title_disclaimer))
+                .content(getResources().getString(R.string.show_case_disclaimer))
+                .color(ContextCompat.getColor(this, R.color.header_color), 0, ContextCompat.getColor(this, R.color.header_color))
+                .neutralButton(getResources().getString(R.string.show_case_close_disclaimer), new DroidDialog.onNeutralListener() {
+                    @Override
+                    public void onNeutral(Dialog dialog) {
+                        dialog.dismiss();
+                    }
+                })
+                .animation(AnimUtils.AnimFadeInOut)
+                .show();
+
+
         View camera = findViewById(R.id.content_camera);
         View gallery = findViewById(R.id.content_gallery);
         View history = findViewById(R.id.content_history);
@@ -471,7 +481,6 @@ public class MainActivity extends LoadingDialog
         config.setDelay(500); // half second between each showcase view
 
         MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, msg);
-        //sequence.setConfig(config);
 
         sequence.addSequenceItem(camera,
                 getResources().getString(R.string.show_case_camera_text), getResources().getString(R.string.show_case_close_window));
@@ -539,7 +548,6 @@ public class MainActivity extends LoadingDialog
                 Log.d("YourActivity", "Upload Complete");
 
             }
-//        Toast.makeText(getApplicationContext(), "Upload to server completed", Toast.LENGTH_LONG);
             Log.d("YourActivity", "Bytes Transferrred: " + uploadObserver.getBytesTransferred());
             Log.d("YourActivity", "Bytes Total: " + uploadObserver.getBytesTotal());
 
@@ -602,7 +610,7 @@ public class MainActivity extends LoadingDialog
 
         Log.i(TAG, "Downloading from s3 "+uploadedKey + "_" + imageExtenstion+".json");
         TransferObserver downloadObserver =
-                transferUtility.download(DOWNLOAD_BUCKET,uploadedKey + "_" + imageExtenstion+".json",f);
+                transferUtility.download(DOWNLOAD_BUCKET,uploadedKey + "_" + imageExtenstion + ".json",f);
 
         downloadObserver.setTransferListener(new TransferListener() {
 
@@ -610,7 +618,7 @@ public class MainActivity extends LoadingDialog
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
                     // Handle a completed upload.
-                    Log.i(TAG, "OT3: Download complete");
+                    Log.i(TAG, "Download complete");
                     String cachePath = getCacheDir().getPath();
                     File myDisk = new File(cachePath);
                     File json_string = new File(myDisk+File.separator+nameToDownload);
@@ -684,7 +692,7 @@ public class MainActivity extends LoadingDialog
                     .setToolbarTitleColor(ZColor.WHITE)
                     .setGalleryBackgroundColor(ZColor.WHITE)
                     .setToolbarColorResId(R.color.header_color)
-                    .setTitle("Moles you have captured")
+                    .setTitle(getResources().getString(R.string.history_activity_title))
                     .show();
         }
         else{
