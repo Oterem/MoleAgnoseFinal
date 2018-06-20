@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
@@ -28,7 +27,6 @@ import android.view.MenuItem;
 
 import android.widget.Toast;
 
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -39,7 +37,6 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -87,7 +84,7 @@ public class MainActivity extends LoadingDialog
     //----------------------------- Global Vars --------------------------------------
     private Uri photoURI;
     private String imageName = "";
-    private String imageExtenstion = "";
+    private String imageExtension = "";
     private String uploadedKey = "";
     private String nameToDownload = "";
     private String helpUrl = "";
@@ -128,6 +125,7 @@ public class MainActivity extends LoadingDialog
 
         }
         AWSMobileClient.getInstance().initialize(this).execute();
+        showDisclaimer();
 
     }
 
@@ -335,7 +333,7 @@ public class MainActivity extends LoadingDialog
                     if (resultCode == RESULT_OK) {//Delete the full size image after the crop
                         photoURI = result.getUri();
                         imageName = Utils.getPath(this, photoURI);
-                        imageExtenstion = imageName.substring(imageName.lastIndexOf(".") + 1);
+                        imageExtension = imageName.substring(imageName.lastIndexOf(".") + 1);
                         imageName = imageName.replaceFirst(".*/(\\w+).*", "$1");
                         UploadToS3AsyncTask job = new UploadToS3AsyncTask();
                         if(Utils.isNetworkConnected(this)){
@@ -455,9 +453,7 @@ public class MainActivity extends LoadingDialog
 
     }
 
-    private void showCase(String msg) {
-
-        //Showing Disclaimer only on first use after installing the app
+    private void showDisclaimer(){
         new DroidDialog.Builder(this)
                 .icon(R.drawable.info_logo)
                 .title(getResources().getString(R.string.show_case_title_disclaimer))
@@ -471,7 +467,9 @@ public class MainActivity extends LoadingDialog
                 })
                 .animation(AnimUtils.AnimFadeInOut)
                 .show();
+    }
 
+    private void showCase(String msg) {
 
         View camera = findViewById(R.id.content_camera);
         View gallery = findViewById(R.id.content_gallery);
@@ -510,8 +508,8 @@ public class MainActivity extends LoadingDialog
 
             uploadedKey = (android_id + "_" + imageName).replace(".", "_");
             Log.i(TAG, "uploadKey is: "+uploadedKey);
-            transferUtility.upload(UPLOAD_BUCKET, uploadedKey + "." + imageExtenstion, new File(path));
-            TransferObserver uploadObserver = transferUtility.upload(UPLOAD_BUCKET,uploadedKey + "." + imageExtenstion,new File(path));
+            transferUtility.upload(UPLOAD_BUCKET, uploadedKey + "." + imageExtension, new File(path));
+            TransferObserver uploadObserver = transferUtility.upload(UPLOAD_BUCKET,uploadedKey + "." + imageExtension,new File(path));
 
             // Attach a listener to the observer to get state update and progress notifications
             uploadObserver.setTransferListener(new TransferListener() {
@@ -608,9 +606,9 @@ public class MainActivity extends LoadingDialog
                         .s3Client(new AmazonS3Client(AWSMobileClient.getInstance().getCredentialsProvider()))
                         .build();
 
-        Log.i(TAG, "Downloading from s3 "+uploadedKey + "_" + imageExtenstion+".json");
+        Log.i(TAG, "Downloading from s3 "+uploadedKey + "_" + imageExtension +".json");
         TransferObserver downloadObserver =
-                transferUtility.download(DOWNLOAD_BUCKET,uploadedKey + "_" + imageExtenstion + ".json",f);
+                transferUtility.download(DOWNLOAD_BUCKET,uploadedKey + "_" + imageExtension + ".json",f);
 
         downloadObserver.setTransferListener(new TransferListener() {
 
